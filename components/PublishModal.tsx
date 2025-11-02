@@ -32,7 +32,7 @@ export function PublishModal({ onClose, onPublish, isSaving }: PublishModalProps
 			onClick={onClose}
 		>
 			<div
-				className="bg-gray-a2 border border-gray-a4 rounded-lg max-w-md w-full p-6 space-y-6"
+				className="bg-gray-a1 border border-gray-a4 rounded-lg max-w-md w-full p-6 space-y-6"
 				onClick={(e) => e.stopPropagation()}
 			>
 				<div className="mb-4">
