@@ -171,7 +171,7 @@ export function TierRow({
 							className="p-2 hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center"
 							title="Settings - Click to change color"
 						>
-							{/* Solid gear icon - 8 sharp triangular teeth with center hole */}
+							{/* Solid gear icon - 8 trapezoidal teeth with flat tops and center hole */}
 							<svg
 								width="20"
 								height="20"
@@ -179,12 +179,12 @@ export function TierRow({
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								{/* 8-tooth gear - proper triangular teeth from center */}
+								{/* 8-tooth gear with trapezoidal teeth (wider at base, flat top) */}
 								<path
-									d="M10 1.5 L11.9 4.1 L14.9 4.9 L13.1 7.1 L13.9 10.1 L10 9.5 L6.1 10.1 L6.9 7.1 L5.1 4.9 L8.1 4.1 L10 1.5 Z M10 10.5 L13.9 11.1 L13.1 14.1 L14.9 16.3 L11.9 17.1 L10 19.7 L8.1 17.1 L5.1 16.3 L6.9 14.1 L6.1 11.1 L10 10.5 Z"
+									d="M10 1 L11.5 3.5 L13.5 3.5 L15 1.5 L17 4 L16.5 6 L18 8 L15.5 8.5 L15 10.5 L17 13 L15 15.5 L12.5 15 L10 17.5 L7.5 15 L5 15.5 L3 13 L5 10.5 L4.5 8.5 L2 8 L3.5 6 L3 4 L5 1.5 L7 3.5 L9 3.5 L10 1 Z"
 									fill="white"
 								/>
-								{/* Center white body - fills gap between teeth and hole */}
+								{/* Center white body circle */}
 								<circle cx="10" cy="10" r="5" fill="white"/>
 								{/* Center black hole */}
 								<circle cx="10" cy="10" r="2.5" fill="black"/>
