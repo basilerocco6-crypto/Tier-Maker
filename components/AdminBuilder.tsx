@@ -270,19 +270,19 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 						Upload images to be used in your tier list. Images are not saved to the website, but will be included in your download.
 					</p>
 					<div className="flex items-center gap-4">
-						<label className="cursor-pointer">
-							<input
-								type="file"
-								accept="image/*"
-								multiple
-								onChange={handleImageUpload}
-								className="hidden"
-								id="image-upload-input"
-							/>
+						<input
+							type="file"
+							accept="image/*"
+							multiple
+							onChange={handleImageUpload}
+							className="hidden"
+							id="image-upload-input"
+						/>
+						<label htmlFor="image-upload-input" className="cursor-pointer">
 							<Button
 								variant="ghost"
 								size="3"
-								as="span"
+								type="button"
 								onClick={() => document.getElementById("image-upload-input")?.click()}
 							>
 								Choose file
