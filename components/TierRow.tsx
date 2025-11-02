@@ -171,7 +171,7 @@ export function TierRow({
 							className="p-2 hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center"
 							title="Settings - Click to change color"
 						>
-							{/* Solid gear icon with 8 teeth */}
+							{/* Solid gear icon - 8 teeth */}
 							<svg
 								width="20"
 								height="20"
@@ -179,18 +179,16 @@ export function TierRow({
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								{/* 8-tooth gear shape */}
+								{/* Gear shape with 8 teeth */}
 								<path
-									d="M10 1L11.18 4.32L14.5 5.5L11.18 6.68L10 10L8.82 6.68L5.5 5.5L8.82 4.32L10 1Z"
+									fillRule="evenodd"
+									clipRule="evenodd"
+									d="M10 0L11.5 3.5L15 5L11.5 6.5L10 10L8.5 6.5L5 5L8.5 3.5L10 0ZM10 10L12.5 11.5L15 15L12.5 18.5L10 20L7.5 18.5L5 15L7.5 11.5L10 10Z"
 									fill="white"
 								/>
-								<path
-									d="M10 10L12.32 11.18L13.5 14.5L12.32 17.82L10 19L7.68 17.82L6.5 14.5L7.68 11.18L10 10Z"
-									fill="white"
-								/>
-								{/* Center hole */}
-								<circle cx="10" cy="10" r="3" fill="white"/>
-								<circle cx="10" cy="10" r="2" fill="black"/>
+								{/* Center circle */}
+								<circle cx="10" cy="10" r="3.5" fill="white"/>
+								<circle cx="10" cy="10" r="2.5" fill="black"/>
 							</svg>
 						</button>
 					</div>
