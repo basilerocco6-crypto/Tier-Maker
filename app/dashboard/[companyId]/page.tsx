@@ -1,6 +1,5 @@
-import { Button } from "@whop/react/components";
 import { headers } from "next/headers";
-import Link from "next/link";
+import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 import { whopsdk } from "@/lib/whop-sdk";
 
 export default async function DashboardPage({
@@ -27,11 +26,9 @@ export default async function DashboardPage({
 				<h1 className="text-9">
 					Hi <strong>{displayName}</strong>!
 				</h1>
-				<Link href="https://docs.whop.com/apps" target="_blank">
-					<Button variant="classic" className="w-full" size="3">
-						Developer Docs
-					</Button>
-				</Link>
+				<ExternalLinkButton href="https://docs.whop.com/apps" variant="classic" className="w-full" size="3">
+					Developer Docs
+				</ExternalLinkButton>
 			</div>
 
 			<p className="text-3 text-gray-10">

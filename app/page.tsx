@@ -1,31 +1,46 @@
-import { Button } from "@whop/react/components";
-import Link from "next/link";
+import { TierListGallery } from "@/components/TierListGallery";
+import { getUserId } from "@/lib/auth-helper";
+import { supabaseAdmin } from "@/lib/supabase";
+import type { TierListTemplate } from "@/lib/types";
 
-export default function Page() {
+async function getTierLists(userId: string | null, userRole: "admin" | "member") {
+	// Fetch all tier lists based on user role
+	const { data, error } = await supabaseAdmin
+		.from("tier_list_templates")
+		.select("*")
+		.order("created_at", { ascending: false });
+
+	if (error) {
+		console.error("Error fetching tier lists:", error);
+		return [];
+	}
+
+	return data as TierListTemplate[];
+}
+
+async function getUserRole(userId: string | null): Promise<"admin" | "member"> {
+	// In development without auth, default to admin for testing
+	if (!userId) {
+		return "admin";
+	}
+
+	// Check if user is admin (Whop company owner)
+	// For now, you can check based on Whop user data
+	// You might want to store this in Supabase or check via Whop API
+	// This is a placeholder - adjust based on your needs
+	return "member"; // Default to member, update based on your logic
+}
+
+export default async function DashboardPage() {
+	const userId = await getUserId();
+	const userRole = await getUserRole(userId);
+	const tierLists = await getTierLists(userId, userRole);
+
 	return (
-		<div className="py-12 px-4 sm:px-6 lg:px-8">
-			<div className="max-w-2xl mx-auto rounded-3xl bg-gray-a2 p-4 border border-gray-a4">
-				<div className="text-center mt-8 mb-12">
-					<h1 className="text-8 font-bold text-gray-12 mb-4">
-						Welcome to Your Whop App
-					</h1>
-					<p className="text-4 text-gray-10">
-						Learn how to build your application on our docs
-					</p>
-				</div>
-
-				<div className="justify-center flex w-full">
-					<Link
-						href="https://docs.whop.com/apps"
-						className="w-full"
-						target="_blank"
-					>
-						<Button variant="classic" className="w-full" size="4">
-							Developer Docs
-						</Button>
-					</Link>
-				</div>
-			</div>
-		</div>
+		<TierListGallery
+			tierLists={tierLists}
+			userRole={userRole}
+			userId={userId || "dev-user"}
+		/>
 	);
 }
