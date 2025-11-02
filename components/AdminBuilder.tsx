@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { DndContext, DragOverlay, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Button } from "@whop/react/components";
 import { TierListBoard } from "./TierListBoard";
 import { ItemBank } from "./ItemBank";
@@ -57,6 +57,21 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 
 		if (!over) return;
 
+		// Check if we're dragging a tier row (for reordering)
+		const activeTier = tierRows.find((t) => t.id === active.id);
+		if (activeTier && isEditable) {
+			// Check if over is also a tier row
+			const overTier = tierRows.find((t) => t.id === over.id);
+			if (overTier && active.id !== over.id) {
+				// Reordering tier rows
+				const oldIndex = tierRows.findIndex((t) => t.id === active.id);
+				const newIndex = tierRows.findIndex((t) => t.id === over.id);
+				const newTiers = arrayMove(tierRows, oldIndex, newIndex);
+				handleTierReorder(newTiers);
+				return;
+			}
+		}
+
 		// Handle item moves from ItemBank to TierRows (or between TierRows)
 		if (active.id !== over.id) {
 			const activeItem = itemBank.find((i) => i.id === active.id);
@@ -64,7 +79,7 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 				const fromTierId = placement[active.id] || null;
 				const toTierId = over.id as string;
 				
-				// Check if over.id is a tier row
+				// Check if over.id is a tier row or item-bank
 				const isTierRow = tierRows.find((t) => t.id === toTierId);
 				if (isTierRow || toTierId === "item-bank") {
 					handleItemMove(active.id, fromTierId, toTierId);
