@@ -1,6 +1,8 @@
 "use client";
 
 import { useSortable } from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/core";
+import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@whop/react/components";
 import { useEffect, useState } from "react";
@@ -14,6 +16,39 @@ interface TierRowProps {
 	onTierColorChange?: (tierId: string, color: string) => void;
 	onTierDelete?: (tierId: string) => void;
 	onItemClick?: (item: TierListItem) => void;
+}
+
+// Draggable item component
+function DraggableItem({ item, isEditable }: { item: TierListItem; isEditable: boolean }) {
+	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+		id: item.id,
+		disabled: !isEditable,
+	});
+
+	const style = {
+		transform: CSS.Translate.toString(transform),
+		opacity: isDragging ? 0.5 : 1,
+	};
+
+	if (!isEditable) {
+		return (
+			<img
+				src={item.imageUrl}
+				alt="Tier item"
+				className="w-16 h-16 object-cover rounded cursor-pointer hover:scale-110 transition-transform"
+			/>
+		);
+	}
+
+	return (
+		<div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+			<img
+				src={item.imageUrl}
+				alt="Tier item"
+				className="w-16 h-16 object-cover rounded cursor-pointer hover:scale-110 transition-transform"
+			/>
+		</div>
+	);
 }
 
 export function TierRow({
@@ -32,39 +67,41 @@ export function TierRow({
 	}, []);
 
 	const {
-		attributes,
-		listeners,
-		setNodeRef,
+		attributes: sortableAttributes,
+		listeners: sortableListeners,
+		setNodeRef: setSortableRef,
 		transform,
 		transition,
-		isDragging,
+		isDragging: isTierDragging,
 	} = useSortable({ id: tier.id, disabled: !isEditable || !isMounted });
+
+	const { setNodeRef: setDroppableRef, isOver } = useDroppable({
+		id: tier.id,
+		disabled: !isEditable,
+	});
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition,
-		opacity: isDragging ? 0.5 : 1,
+		opacity: isTierDragging ? 0.5 : 1,
+		backgroundColor: tier.color,
+		border: isOver && isEditable ? "2px solid #3b82f6" : "none",
 	};
-
-	const tierItems = items.filter((item) => {
-		// This will be determined by the parent component's placement logic
-		return true;
-	});
 
 	return (
 		<div
-			ref={setNodeRef}
-			style={{
-				...style,
-				backgroundColor: tier.color,
+			ref={(node) => {
+				setSortableRef(node);
+				setDroppableRef(node);
 			}}
+			style={style}
 			className="flex gap-4 p-4 rounded-lg mb-2"
 			suppressHydrationWarning
 		>
 			{isEditable && (
 				<div
-					{...attributes}
-					{...listeners}
+					{...sortableAttributes}
+					{...sortableListeners}
 					className="cursor-grab active:cursor-grabbing flex items-center px-2"
 					suppressHydrationWarning
 				>
@@ -117,14 +154,11 @@ export function TierRow({
 			</div>
 
 			<div className="flex gap-2 flex-wrap">
-				{tierItems.map((item) => (
-					<img
+				{items.map((item) => (
+					<DraggableItem
 						key={item.id}
-						src={item.imageUrl}
-						alt="Tier item"
-						className="w-16 h-16 object-cover rounded cursor-pointer hover:scale-110 transition-transform"
-						onClick={() => onItemClick?.(item)}
-						draggable={isEditable}
+						item={item}
+						isEditable={isEditable || false}
 					/>
 				))}
 			</div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useDroppable } from "@dnd-kit/core";
+import { useDroppable, useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@whop/react/components";
 import type { TierListItem } from "@/lib/types";
 
@@ -10,6 +11,39 @@ interface ItemBankProps {
 	isEditable?: boolean;
 	onUploadClick?: () => void;
 	onItemClick?: (item: TierListItem) => void;
+}
+
+// Draggable item component for ItemBank
+function DraggableBankItem({ item, isEditable }: { item: TierListItem; isEditable: boolean }) {
+	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+		id: item.id,
+		disabled: !isEditable,
+	});
+
+	const style = {
+		transform: CSS.Translate.toString(transform),
+		opacity: isDragging ? 0.5 : 1,
+	};
+
+	if (!isEditable) {
+		return (
+			<img
+				src={item.imageUrl}
+				alt="Tier item"
+				className="w-16 h-16 object-cover rounded cursor-pointer hover:scale-110 transition-transform border-2 border-gray-a4"
+			/>
+		);
+	}
+
+	return (
+		<div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+			<img
+				src={item.imageUrl}
+				alt="Tier item"
+				className="w-16 h-16 object-cover rounded cursor-pointer hover:scale-110 transition-transform border-2 border-gray-a4"
+			/>
+		</div>
+	);
 }
 
 export function ItemBank({
@@ -44,14 +78,9 @@ export function ItemBank({
 					<p className="text-2 text-gray-9">No unplaced items</p>
 				) : (
 					unplacedItems.map((item) => (
-						<img
-							key={item.id}
-							src={item.imageUrl}
-							alt="Tier item"
-							className="w-16 h-16 object-cover rounded cursor-pointer hover:scale-110 transition-transform border-2 border-gray-a4"
-							onClick={() => onItemClick?.(item)}
-							draggable={isEditable}
-						/>
+						<div key={item.id} onClick={() => onItemClick?.(item)}>
+							<DraggableBankItem item={item} isEditable={isEditable || false} />
+						</div>
 					))
 				)}
 			</div>
