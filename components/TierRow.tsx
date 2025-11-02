@@ -107,7 +107,7 @@ export function TierRow({
 						/>
 						<Button
 							variant="classic"
-							size="icon-sm"
+							size="2"
 							onClick={() => onTierDelete?.(tier.id)}
 						>
 							Delete
