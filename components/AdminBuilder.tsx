@@ -218,7 +218,7 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 					</div>
 					<div className="flex gap-2">
 						<Button
-							variant="outline"
+							variant="ghost"
 							size="3"
 							onClick={handleSaveDraft}
 							disabled={isSaving}

@@ -63,7 +63,7 @@ export function TierListCard({
 					<div className="flex gap-2 flex-wrap">
 						{template.status === "draft" && (
 							<>
-								<Button variant="outline" size="3" onClick={onEdit}>
+								<Button variant="ghost" size="3" onClick={onEdit}>
 									Edit
 								</Button>
 								<Button variant="destructive" size="3" onClick={onDelete}>
@@ -73,10 +73,10 @@ export function TierListCard({
 						)}
 						{template.status !== "draft" && (
 							<>
-								<Button variant="outline" size="3" onClick={onEdit}>
+								<Button variant="ghost" size="3" onClick={onEdit}>
 									Edit
 								</Button>
-								<Button variant="outline" size="3" onClick={onViewSubmissions}>
+								<Button variant="ghost" size="3" onClick={onViewSubmissions}>
 									View Submissions
 								</Button>
 							</>

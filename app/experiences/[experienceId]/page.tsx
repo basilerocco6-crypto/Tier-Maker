@@ -131,7 +131,7 @@ export default async function ExperiencePage({
 						<Button variant="classic" size="4">
 							View Dashboard
 						</Button>
-						<Button variant="outline" size="4">
+						<Button variant="ghost" size="4">
 							Settings
 						</Button>
 					</div>

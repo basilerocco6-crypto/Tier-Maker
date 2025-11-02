@@ -108,14 +108,14 @@ export function MemberListPage({
 				<div className="flex justify-between items-center mb-6">
 					<h1 className="text-9 font-bold text-gray-12">{template.title}</h1>
 					<div className="flex gap-2">
-						<Button variant="outline" size="3" onClick={handleReset}>
+						<Button variant="ghost" size="3" onClick={handleReset}>
 							Reset
 						</Button>
 						<Button variant="classic" size="3" onClick={handleSave}>
 							{saved ? "Saved!" : "Save My List"}
 						</Button>
 						{saved && (
-							<Button variant="outline" size="3" onClick={handleShare}>
+							<Button variant="ghost" size="3" onClick={handleShare}>
 								Share to Discord
 							</Button>
 						)}

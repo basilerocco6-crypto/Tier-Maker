@@ -33,7 +33,7 @@ export function ItemBank({
 			<div className="flex items-center justify-between mb-4">
 				<h3 className="text-4 font-semibold text-gray-12">Item Bank</h3>
 				{isEditable && (
-					<Button variant="outline" size="3" onClick={onUploadClick}>
+					<Button variant="ghost" size="3" onClick={onUploadClick}>
 						Upload Items
 					</Button>
 				)}

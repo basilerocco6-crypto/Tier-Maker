@@ -133,7 +133,7 @@ export function PublishModal({ onClose, onPublish, isSaving }: PublishModalProps
 
 					{/* Buttons */}
 					<div className="flex gap-2 justify-end pt-4">
-						<Button variant="outline" size="3" onClick={onClose} disabled={isSaving}>
+						<Button variant="ghost" size="3" onClick={onClose} disabled={isSaving}>
 							Cancel
 						</Button>
 						<Button
