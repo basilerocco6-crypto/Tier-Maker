@@ -6,7 +6,7 @@ import { Button } from "@whop/react/components";
 interface ExternalLinkButtonProps {
 	href: string;
 	children: React.ReactNode;
-	variant?: "classic" | "outline" | "ghost";
+	variant?: "classic" | "ghost" | "solid" | "soft" | "surface";
 	size?: "1" | "2" | "3" | "4";
 	className?: string;
 }
