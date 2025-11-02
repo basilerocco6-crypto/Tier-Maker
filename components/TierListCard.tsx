@@ -52,9 +52,7 @@ export function TierListCard({
 						{template.status}
 					</span>
 					<span className={`px-2 py-1 rounded text-2 font-medium ${accessBadgeClass}`}>
-						{template.accessType === "free"
-							? "Free"
-							: `Paid: $${((template.price || 0) / 100).toFixed(2)}`}
+					Free
 					</span>
 				</div>
 			</div>
