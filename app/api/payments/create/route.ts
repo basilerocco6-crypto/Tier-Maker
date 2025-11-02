@@ -8,19 +8,15 @@ export async function POST(request: Request) {
 		const { userId } = await whopsdk.verifyUserToken(await headers());
 		const body = await request.json();
 
-		// Create payment checkout using Whop SDK
-		// This is a placeholder - adjust based on Whop payment API
-		const checkout = await whopsdk.checkouts.create({
-			productId: body.templateId, // You'll need a Whop product ID
-			amount: body.amount,
-			userId: userId,
-		});
-
-		// Or use Whop's payment links
-		// For now, create a checkout URL or payment link
-		const checkoutUrl = checkout.url || `/checkout/${checkout.id}`;
-
-		return NextResponse.json({ checkoutUrl, checkoutId: checkout.id });
+		// This route is deprecated - use /api/checkout/create instead
+		// Redirect to checkout creation endpoint
+		return NextResponse.json(
+			{ 
+				error: "This endpoint is deprecated. Use /api/checkout/create instead.",
+				message: "Use the checkout configuration endpoint for in-app purchases"
+			},
+			{ status: 410 } // Gone
+		);
 	} catch (error: any) {
 		console.error("Payment creation error:", error);
 		return NextResponse.json(
