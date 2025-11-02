@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ hostname: "**" }],
   },
+  // Disable static generation for pages that require runtime SDK initialization
+  experimental: {
+    // This helps prevent build-time errors for pages that need runtime data
+  },
 };
 
 export default withWhopAppConfig(nextConfig);

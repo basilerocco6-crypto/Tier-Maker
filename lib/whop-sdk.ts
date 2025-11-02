@@ -6,22 +6,25 @@ let _whopsdk: Whop | null = null;
 
 function getWhopSdk(): Whop {
 	if (!_whopsdk) {
-		const appID = process.env.NEXT_PUBLIC_WHOP_APP_ID || "placeholder-app-id";
-		const apiKey = process.env.WHOP_API_KEY || "placeholder-api-key";
-		const webhookSecret = process.env.WHOP_WEBHOOK_SECRET || "";
+		// Always provide values - use placeholders during build if env vars aren't set
+		// Vercel will have real env vars at runtime
+		const appID = process.env.NEXT_PUBLIC_WHOP_APP_ID || "app_placeholder_build";
+		const apiKey = process.env.WHOP_API_KEY || "whop_placeholder_build";
+		const webhookSecret = process.env.WHOP_WEBHOOK_SECRET || "placeholder_secret_build";
 
-		// Create SDK instance - will work at runtime when real env vars are set
-		// During build, placeholder values prevent errors
+		// Create SDK instance - placeholders allow build to succeed
+		// Real values from Vercel env vars will be used at runtime
 		_whopsdk = new Whop({
 			appID,
 			apiKey,
-			webhookKey: webhookSecret ? btoa(webhookSecret) : btoa("placeholder-secret"),
+			webhookKey: btoa(webhookSecret),
 		});
 	}
 	return _whopsdk;
 }
 
 // Export a Proxy that lazily initializes the SDK
+// This ensures SDK is only created when actually used, not during import
 export const whopsdk = new Proxy({} as Whop, {
 	get(_target, prop) {
 		const sdk = getWhopSdk();
