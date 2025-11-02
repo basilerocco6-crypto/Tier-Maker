@@ -176,19 +176,16 @@ export function TierRow({
 								width="20"
 								height="20"
 								viewBox="0 0 20 20"
-								fill="none"
+								fill="white"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								{/* Gear shape with 8 teeth */}
+								{/* Classic 8-tooth gear */}
 								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M10 0L11.5 3.5L15 5L11.5 6.5L10 10L8.5 6.5L5 5L8.5 3.5L10 0ZM10 10L12.5 11.5L15 15L12.5 18.5L10 20L7.5 18.5L5 15L7.5 11.5L10 10Z"
+									d="M10 2L11.5 4.5L14.5 5.5L12 7.5L12.5 10.5L10 11L7.5 10.5L8 7.5L5.5 5.5L8.5 4.5L10 2ZM10 8.5L12 10L13 12.5L11.5 14.5L9 15L6.5 14.5L7 12.5L8 10L10 8.5Z"
 									fill="white"
 								/>
-								{/* Center circle */}
-								<circle cx="10" cy="10" r="3.5" fill="white"/>
-								<circle cx="10" cy="10" r="2.5" fill="black"/>
+								<circle cx="10" cy="10" r="3" fill="white"/>
+								<circle cx="10" cy="10" r="2" fill="black"/>
 							</svg>
 						</button>
 					</div>
