@@ -19,7 +19,7 @@ export function CreateTierListButton() {
 		<Button
 			variant="classic"
 			size="4"
-			onClick={() => navigateTo("/admin/builder/new")}
+			onClick={() => navigateTo("/builder/new")}
 		>
 			Create New List
 		</Button>

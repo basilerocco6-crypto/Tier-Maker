@@ -16,14 +16,12 @@ import type {
 interface MemberListPageProps {
 	template: TierListTemplate;
 	userId: string;
-	hasAccess: boolean;
 	existingSubmission: TierListSubmission | null;
 }
 
 export function MemberListPage({
 	template,
 	userId,
-	hasAccess,
 	existingSubmission,
 }: MemberListPageProps) {
 	const iframeSdk = useIframeSdk();

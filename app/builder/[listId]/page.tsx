@@ -22,7 +22,7 @@ async function getTemplate(listId: string): Promise<TierListTemplate | null> {
 	return data as TierListTemplate;
 }
 
-export default async function AdminBuilderPage({
+export default async function BuilderPage({
 	params,
 }: {
 	params: Promise<{ listId: string }>;
@@ -30,18 +30,7 @@ export default async function AdminBuilderPage({
 	const { listId } = await params;
 	const userId = await getUserId();
 
-	// In development, allow access. In production, check if user is admin
-	if (!userId && process.env.NODE_ENV !== "development") {
-		return (
-			<div className="min-h-screen flex items-center justify-center p-8">
-				<div className="text-center">
-					<h1 className="text-9 font-bold text-gray-12 mb-4">Access Denied</h1>
-					<p className="text-3 text-gray-10">You must be an admin to access this page.</p>
-				</div>
-			</div>
-		);
-	}
-
+	// No admin check - everyone can create tier lists
 	const template = await getTemplate(listId);
 
 	return <AdminBuilder template={template} listId={listId} userId={userId || "dev-user"} />;

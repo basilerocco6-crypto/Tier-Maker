@@ -140,7 +140,7 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 				// Otherwise, go back to dashboard
 				setTimeout(() => {
 					if (listId === "new" && data.template?.id) {
-						navigateTo(`/admin/builder/${data.template.id}`);
+						navigateTo(`/builder/${data.template.id}`);
 					} else {
 						navigateTo("/");
 					}

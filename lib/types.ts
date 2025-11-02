@@ -35,10 +35,3 @@ export interface TierListSubmission {
 	createdAt: string;
 }
 
-export interface UserPaidAccess {
-	id: string;
-	userId: string;
-	templateId: string;
-	createdAt: string;
-}
-

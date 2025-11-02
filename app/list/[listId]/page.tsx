@@ -58,7 +58,6 @@ export default async function ListPage({
 		<MemberListPage
 			template={template}
 			userId={userId || "dev-user"}
-			hasAccess={true}
 			existingSubmission={submission}
 		/>
 	);
