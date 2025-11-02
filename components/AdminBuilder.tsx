@@ -59,7 +59,7 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 
 		// Check if we're dragging a tier row (for reordering)
 		const activeTier = tierRows.find((t) => t.id === active.id);
-		if (activeTier && isEditable) {
+		if (activeTier) {
 			// Check if over is also a tier row
 			const overTier = tierRows.find((t) => t.id === over.id);
 			if (overTier && active.id !== over.id) {
