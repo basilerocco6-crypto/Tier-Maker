@@ -51,8 +51,7 @@ export async function PUT(
 			.update({
 				title: body.title,
 				status: body.status,
-				access_type: body.accessType,
-				price: body.price,
+				access_type: "free", // All tier lists are free
 				tier_rows: body.tierRows,
 				item_bank: body.itemBank,
 				admin_placement: body.adminPlacement,

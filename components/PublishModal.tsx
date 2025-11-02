@@ -15,14 +15,11 @@ interface PublishModalProps {
 
 export function PublishModal({ onClose, onPublish, isSaving }: PublishModalProps) {
 	const [status, setStatus] = useState<"published" | "open_for_submission">("published");
-	const [accessType, setAccessType] = useState<"free" | "paid">("free");
-	const [price, setPrice] = useState<string>("");
 
 	const handleConfirm = () => {
 		onPublish({
 			status,
-			accessType,
-			price: accessType === "paid" ? Math.round(parseFloat(price) * 100) : undefined,
+			accessType: "free",
 		});
 	};
 
@@ -79,59 +76,6 @@ export function PublishModal({ onClose, onPublish, isSaving }: PublishModalProps
 						</div>
 					</div>
 
-					{/* Access Type Selection */}
-					<div>
-						<label className="text-4 font-semibold text-gray-12 mb-2 block">
-							Access Type
-						</label>
-						<div className="space-y-2">
-							<label className="flex items-center gap-2 cursor-pointer">
-								<input
-									type="radio"
-									name="accessType"
-									value="free"
-									checked={accessType === "free"}
-									onChange={(e) =>
-										setAccessType(e.target.value as "free" | "paid")
-									}
-									className="w-4 h-4"
-								/>
-								<span className="text-3 text-gray-10">Free</span>
-							</label>
-							<label className="flex items-center gap-2 cursor-pointer">
-								<input
-									type="radio"
-									name="accessType"
-									value="paid"
-									checked={accessType === "paid"}
-									onChange={(e) =>
-										setAccessType(e.target.value as "free" | "paid")
-									}
-									className="w-4 h-4"
-								/>
-								<span className="text-3 text-gray-10">Paid</span>
-							</label>
-						</div>
-					</div>
-
-					{/* Price Input */}
-					{accessType === "paid" && (
-						<div>
-							<label className="text-4 font-semibold text-gray-12 mb-2 block">
-								Price (USD)
-							</label>
-							<input
-								type="number"
-								step="0.01"
-								min="0"
-								value={price}
-								onChange={(e) => setPrice(e.target.value)}
-								placeholder="0.00"
-								className="w-full h-9 px-3 py-1 rounded-md border border-gray-a4 bg-gray-a1 text-gray-12 text-3 focus:outline-none focus:ring-2 focus:ring-blue-6 focus:border-blue-6"
-							/>
-						</div>
-					)}
-
 					{/* Buttons */}
 					<div className="flex gap-2 justify-end pt-4">
 						<Button variant="ghost" size="3" onClick={onClose} disabled={isSaving}>
@@ -141,7 +85,7 @@ export function PublishModal({ onClose, onPublish, isSaving }: PublishModalProps
 							variant="classic"
 							size="3"
 							onClick={handleConfirm}
-							disabled={isSaving || (accessType === "paid" && (!price || parseFloat(price) <= 0))}
+							disabled={isSaving}
 						>
 							{isSaving ? "Publishing..." : "Confirm Publish"}
 						</Button>

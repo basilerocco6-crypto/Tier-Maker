@@ -5,7 +5,6 @@ import { useIframeSdk } from "@whop/react";
 import { Button } from "@whop/react/components";
 import { TierListBoard } from "./TierListBoard";
 import { ItemBank } from "./ItemBank";
-import { PurchaseButton } from "./PurchaseButton";
 import { NotificationModal } from "./NotificationModal";
 import type {
 	TierListTemplate,
@@ -102,14 +101,7 @@ export function MemberListPage({
 		);
 	}
 
-	// State B: Paid, Published List (Gated)
-	if (template.accessType === "paid" && !hasAccess) {
-		return (
-			<PaidGatedView template={template} userId={userId} />
-		);
-	}
-
-	// State C: Open for Community Submissions
+	// All tier lists are now free - no paid gating
 	return (
 		<div className="min-h-screen p-8 bg-gray-a1">
 			<div className="max-w-7xl mx-auto">
@@ -163,72 +155,4 @@ export function MemberListPage({
 	);
 }
 
-/**
- * PaidGatedView component
- * Shows payment gate for paid tier lists
- */
-function PaidGatedView({
-	template,
-	userId,
-}: {
-	template: TierListTemplate;
-	userId: string;
-}) {
-	const [purchaseError, setPurchaseError] = useState<string | null>(null);
-	const [purchaseSuccess, setPurchaseSuccess] = useState(false);
-
-	const handlePurchaseSuccess = () => {
-		setPurchaseSuccess(true);
-		// Reload after a short delay to show updated access
-		setTimeout(() => {
-			window.location.reload();
-		}, 1500);
-	};
-
-	const handlePurchaseError = (error: string) => {
-		setPurchaseError(error);
-		// Clear error after 5 seconds
-		setTimeout(() => {
-			setPurchaseError(null);
-		}, 5000);
-	};
-
-	return (
-		<div className="min-h-screen flex items-center justify-center p-8 bg-gray-a1">
-			<div className="max-w-md w-full bg-gray-a2 border border-gray-a4 rounded-lg p-8 text-center">
-				<h2 className="text-7 font-bold text-gray-12 mb-4">
-					Pay to Unlock
-				</h2>
-				<p className="text-3 text-gray-10 mb-6">
-					Pay ${((template.price || 0) / 100).toFixed(2)} to unlock this tier
-					list
-				</p>
-
-				{purchaseSuccess ? (
-					<div className="p-4 bg-green-2 border border-green-6 rounded text-green-11 text-3">
-						Purchase successful! Unlocking access...
-					</div>
-				) : (
-					<PurchaseButton
-						templateId={template.id}
-						price={template.price || 0}
-						onPurchaseSuccess={handlePurchaseSuccess}
-						onPurchaseError={handlePurchaseError}
-						variant="classic"
-						size="4"
-						className="w-full"
-					>
-						Pay ${((template.price || 0) / 100).toFixed(2)} to Unlock
-					</PurchaseButton>
-				)}
-
-				{purchaseError && (
-					<div className="mt-4 p-3 bg-red-2 border border-red-6 rounded text-red-11 text-2">
-						{purchaseError}
-					</div>
-				)}
-			</div>
-		</div>
-	);
-}
 

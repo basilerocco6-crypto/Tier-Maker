@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { MemberListPage } from "@/components/MemberListPage";
 import { getUserId } from "@/lib/auth-helper";
 import { supabaseAdmin } from "@/lib/supabase";
-import type { TierListTemplate, TierListSubmission, UserPaidAccess } from "@/lib/types";
+import type { TierListTemplate, TierListSubmission } from "@/lib/types";
 
 async function getTemplate(listId: string) {
 	const { data, error } = await supabaseAdmin
@@ -36,19 +36,6 @@ async function getUserSubmission(
 	return data as TierListSubmission;
 }
 
-async function hasPaidAccess(
-	templateId: string,
-	userId: string
-): Promise<boolean> {
-	const { data, error } = await supabaseAdmin
-		.from("user_paid_access")
-		.select("*")
-		.eq("template_id", templateId)
-		.eq("user_id", userId)
-		.single();
-
-	return !error && !!data;
-}
 
 export default async function ListPage({
 	params,
@@ -63,20 +50,15 @@ export default async function ListPage({
 		notFound();
 	}
 
-	// Check payment access if needed
-	let hasAccess = true;
-	if (template.accessType === "paid" && userId) {
-		hasAccess = await hasPaidAccess(listId, userId);
-	}
-
 	// Get user's submission if exists
 	const submission = userId ? await getUserSubmission(listId, userId) : null;
 
+	// All tier lists are free - no access checks needed
 	return (
 		<MemberListPage
 			template={template}
 			userId={userId || "dev-user"}
-			hasAccess={hasAccess}
+			hasAccess={true}
 			existingSubmission={submission}
 		/>
 	);

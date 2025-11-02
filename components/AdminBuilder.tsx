@@ -164,16 +164,14 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 
 	const handlePublish = async (publishData: {
 		status: "published" | "open_for_submission";
-		accessType: "free" | "paid";
-		price?: number;
+		accessType: "free";
 	}) => {
 		setIsSaving(true);
 		try {
 			const payload = {
 				title,
 				status: publishData.status,
-				accessType: publishData.accessType,
-				price: publishData.price,
+				accessType: "free" as const,
 				tierRows,
 				itemBank,
 				adminPlacement: placement,

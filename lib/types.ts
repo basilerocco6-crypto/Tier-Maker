@@ -2,7 +2,6 @@
 
 export interface User {
 	userId: string;
-	role: "admin" | "member";
 }
 
 export interface TierRow {
@@ -20,8 +19,7 @@ export interface TierListTemplate {
 	id: string;
 	title: string;
 	status: "draft" | "published" | "open_for_submission";
-	accessType: "free" | "paid";
-	price?: number; // in cents
+	accessType: "free"; // All tier lists are free
 	tierRows: TierRow[];
 	itemBank: TierListItem[];
 	adminPlacement?: Record<string, string>; // { itemId: tierId }

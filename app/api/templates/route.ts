@@ -43,8 +43,7 @@ export async function POST(request: Request) {
 			.insert({
 				title: body.title,
 				status: body.status || "draft",
-				access_type: body.accessType || "free",
-				price: body.price,
+				access_type: "free", // All tier lists are free
 				tier_rows: body.tierRows || [],
 				item_bank: body.itemBank || [],
 				admin_placement: body.adminPlacement || {},
