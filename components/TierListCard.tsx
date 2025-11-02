@@ -66,7 +66,7 @@ export function TierListCard({
 								<Button variant="ghost" size="3" onClick={onEdit}>
 									Edit
 								</Button>
-								<Button variant="destructive" size="3" onClick={onDelete}>
+								<Button variant="classic" size="3" onClick={onDelete}>
 									Delete
 								</Button>
 							</>
