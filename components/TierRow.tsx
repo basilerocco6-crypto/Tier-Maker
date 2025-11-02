@@ -171,7 +171,7 @@ export function TierRow({
 							className="p-2 hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center"
 							title="Settings - Click to change color"
 						>
-							{/* Solid gear icon - 8 teeth, matching TierMaker exactly */}
+							{/* Solid gear icon - 8 sharp triangular teeth with center hole */}
 							<svg
 								width="20"
 								height="20"
@@ -179,17 +179,14 @@ export function TierRow({
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								{/* 8-tooth gear - clean star shape */}
+								{/* 8-tooth gear - proper gear shape with triangular teeth */}
 								<path
-									d="M10 1L11.38 3.62L14.62 4.38L12 6.62L12.38 10L10 8.62L7.62 10L8 6.62L5.38 4.38L8.62 3.62L10 1Z"
+									d="M10 1.5L11.2 3.8L13.8 4.2L12 6L12.8 8.7L10 7.8L7.2 8.7L8 6L6.2 4.2L8.8 3.8L10 1.5ZM10 11.3L12.8 12.2L14 15L11.8 16.8L13.2 19.3L10 18.5L6.8 19.3L8.2 16.8L6 15L7.2 12.2L10 11.3Z"
 									fill="white"
 								/>
-								<path
-									d="M10 10L12.62 11.38L13.38 14.62L11.38 12L8 12.38L9.38 10L8 7.62L11.38 8L13.38 5.38L12.62 8.62L10 10Z"
-									fill="white"
-								/>
-								{/* Center circle */}
-								<circle cx="10" cy="10" r="3.5" fill="white"/>
+								{/* Center white body circle */}
+								<circle cx="10" cy="10" r="5.5" fill="white"/>
+								{/* Center black hole */}
 								<circle cx="10" cy="10" r="2.5" fill="black"/>
 							</svg>
 						</button>
@@ -209,14 +206,14 @@ export function TierRow({
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
 						>
-							{/* Up chevron - small triangle */}
+							{/* Up chevron - solid triangle pointing up */}
 							<path
-								d="M10 6L7.5 9H12.5L10 6Z"
+								d="M10 5L7 9L13 9L10 5Z"
 								fill="white"
 							/>
-							{/* Down chevron - with gap */}
+							{/* Down chevron - solid triangle pointing down with gap */}
 							<path
-								d="M10 14L7.5 11H12.5L10 14Z"
+								d="M10 15L7 11L13 11L10 15Z"
 								fill="white"
 							/>
 						</svg>
