@@ -26,7 +26,7 @@ export function MemberListPage({
 	hasAccess,
 	existingSubmission,
 }: MemberListPageProps) {
-	const { navigate } = useIframeSdk();
+	const iframeSdk = useIframeSdk();
 	const [placement, setPlacement] = useState<Record<string, string>>(
 		existingSubmission?.userPlacement || template.adminPlacement || {}
 	);
