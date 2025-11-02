@@ -4,6 +4,7 @@ import { useState } from "react";
 import { DndContext, DragOverlay, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Button } from "@whop/react/components";
+import { useIframeSdk } from "@whop/react";
 import { TierListBoard } from "./TierListBoard";
 import { ItemBank } from "./ItemBank";
 import { PublishModal } from "./PublishModal";
@@ -17,6 +18,7 @@ interface AdminBuilderProps {
 }
 
 export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
+	const iframeSdk = useIframeSdk();
 	const [title, setTitle] = useState(template?.title || "New Tier List");
 	const [isEditingTitle, setIsEditingTitle] = useState(false);
 	const [tierRows, setTierRows] = useState<TierRow[]>(
@@ -43,6 +45,16 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 		type: "success" | "error" | "info";
 		message: string;
 	}>({ isOpen: false, type: "info", message: "" });
+
+	// Helper function for navigation that works in both iframe and localhost
+	const navigateTo = (path: string) => {
+		if (iframeSdk && typeof (iframeSdk as any).navigate === "function") {
+			(iframeSdk as any).navigate(path);
+		} else {
+			// Fallback to window.location for localhost/development
+			window.location.href = path;
+		}
+	};
 
 	// DnD sensors for the parent context
 	const sensors = useSensors(
@@ -125,11 +137,14 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 					message: "Draft saved successfully!",
 				});
 				// If this was a new template, redirect to edit mode
-				if (listId === "new" && data.template?.id) {
-					setTimeout(() => {
-						window.location.href = `/admin/builder/${data.template.id}`;
-					}, 1500);
-				}
+				// Otherwise, go back to dashboard
+				setTimeout(() => {
+					if (listId === "new" && data.template?.id) {
+						navigateTo(`/admin/builder/${data.template.id}`);
+					} else {
+						navigateTo("/");
+					}
+				}, 1500);
 			} else {
 				const errorData = await response.json().catch(() => ({}));
 				console.error("Save failed:", errorData);
@@ -184,7 +199,7 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 				});
 				// Redirect to dashboard after showing notification
 				setTimeout(() => {
-					window.location.href = "/";
+					navigateTo("/");
 				}, 1500);
 			} else {
 				throw new Error("Failed to publish");
@@ -305,28 +320,41 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 			<div className="max-w-7xl mx-auto">
 				{/* Fixed Header */}
 				<div className="mb-6 flex items-center justify-between gap-4">
-					<div className="flex-1">
-						{isEditingTitle ? (
-							<input
-								value={title}
-								onChange={(e) => setTitle(e.target.value)}
-								onBlur={() => setIsEditingTitle(false)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter") {
-										setIsEditingTitle(false);
-									}
-								}}
-								className="text-9 font-bold h-9 px-3 py-1 rounded-md border border-gray-a4 bg-gray-a1 text-gray-12 focus:outline-none focus:ring-2 focus:ring-blue-6 focus:border-blue-6"
-								autoFocus
-							/>
-						) : (
-							<h1
-								className="text-9 font-bold text-gray-12 cursor-pointer hover:text-gray-10 transition-colors"
-								onClick={() => setIsEditingTitle(true)}
-							>
-								{title}
-							</h1>
-						)}
+					<div className="flex items-center gap-4 flex-1">
+						<Button
+							variant="ghost"
+							size="3"
+							onClick={() => navigateTo("/")}
+							className="flex items-center gap-2"
+						>
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+							</svg>
+							Back to Dashboard
+						</Button>
+						<div className="flex-1">
+							{isEditingTitle ? (
+								<input
+									value={title}
+									onChange={(e) => setTitle(e.target.value)}
+									onBlur={() => setIsEditingTitle(false)}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											setIsEditingTitle(false);
+										}
+									}}
+									className="text-9 font-bold h-9 px-3 py-1 rounded-md border border-gray-a4 bg-gray-a1 text-gray-12 focus:outline-none focus:ring-2 focus:ring-blue-6 focus:border-blue-6"
+									autoFocus
+								/>
+							) : (
+								<h1
+									className="text-9 font-bold text-gray-12 cursor-pointer hover:text-gray-10 transition-colors"
+									onClick={() => setIsEditingTitle(true)}
+								>
+									{title}
+								</h1>
+							)}
+						</div>
 					</div>
 					<div className="flex gap-2">
 						<Button
