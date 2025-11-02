@@ -1,5 +1,6 @@
 import { getUserId } from "@/lib/auth-helper";
 import { supabaseAdmin } from "@/lib/supabase";
+import { CreateTierListButton } from "@/components/CreateTierListButton";
 import type { TierListTemplate } from "@/lib/types";
 
 async function getTierLists(userId: string | null) {
@@ -29,12 +30,15 @@ export default async function DashboardPage() {
 		return (
 			<div className="min-h-screen p-8 bg-gray-a1">
 				<div className="max-w-7xl mx-auto">
-					<h1 className="text-9 font-bold text-gray-12 mb-8">Tier Lists</h1>
+					<div className="flex justify-between items-center mb-8">
+						<h1 className="text-9 font-bold text-gray-12">Tier Lists</h1>
+						<CreateTierListButton />
+					</div>
 					
 					{tierLists.length === 0 ? (
 						<div className="text-center py-16">
 							<p className="text-4 text-gray-10 mb-4">
-								No tier lists yet.
+								No tier lists yet. Create your first one!
 							</p>
 						</div>
 					) : (
