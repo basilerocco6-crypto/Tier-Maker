@@ -106,7 +106,7 @@ export function TierRow({
 							className="w-12 h-8 rounded border border-gray-a4 cursor-pointer"
 						/>
 						<Button
-							variant="destructive"
+							variant="classic"
 							size="icon-sm"
 							onClick={() => onTierDelete?.(tier.id)}
 						>
