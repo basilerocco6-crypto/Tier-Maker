@@ -1,6 +1,36 @@
 import { headers } from "next/headers";
-import { Button } from "@whop/react/components";
 import { whopsdk } from "@/lib/whop-sdk";
+import { TierListGallery } from "@/components/TierListGallery";
+import { supabaseAdmin } from "@/lib/supabase";
+import type { TierListTemplate } from "@/lib/types";
+
+async function getTierLists(userId: string | null, userRole: "admin" | "member") {
+	// Fetch all tier lists based on user role
+	const { data, error } = await supabaseAdmin
+		.from("tier_list_templates")
+		.select("*")
+		.order("created_at", { ascending: false });
+
+	if (error) {
+		console.error("Error fetching tier lists:", error);
+		return [];
+	}
+
+	return data as TierListTemplate[];
+}
+
+async function getUserRole(userId: string | null): Promise<"admin" | "member"> {
+	// In development without auth, default to admin for testing
+	if (!userId) {
+		return "admin";
+	}
+
+	// Check if user is admin (Whop company owner)
+	// For now, you can check based on Whop user data
+	// You might want to store this in Supabase or check via Whop API
+	// This is a placeholder - adjust based on your needs
+	return "member"; // Default to member, update based on your logic
+}
 
 export default async function ExperiencePage({
 	params,
@@ -69,82 +99,16 @@ export default async function ExperiencePage({
 		);
 	}
 
-	// Fetch the necessary data from whop
-	const [experience, user] = await Promise.all([
-		whopsdk.experiences.retrieve(experienceId),
-		whopsdk.users.retrieve(userId),
-	]);
+	// Fetch tier list data and user role
+	const userRole = await getUserRole(userId);
+	const tierLists = await getTierLists(userId, userRole);
 
-	const displayName = user.name || `@${user.username}`;
-
-	// 2. Build the UI with Frosted UI components
-	// Using proper Frosted UI size scales (0-9 for text/headings)
-	// Components auto-adapt to dark mode
+	// Render the actual Tier List application
 	return (
-		<div className="min-h-screen p-8 bg-gray-a1">
-			<div className="max-w-7xl mx-auto">
-				{/* Header Section */}
-				<div className="mb-8">
-					<h1 className="text-9 font-bold text-gray-12 mb-2">
-						{experience.name || "Experience"}
-					</h1>
-					<p className="text-4 text-gray-10">
-						Welcome, {displayName}!
-					</p>
-				</div>
-
-				{/* Main Content Card */}
-				<div className="bg-gray-a2 border border-gray-a4 rounded-lg p-8 mb-6">
-					<h2 className="text-7 font-semibold text-gray-12 mb-4">
-						Experience Details
-					</h2>
-					<div className="space-y-4">
-						<div>
-							<p className="text-3 text-gray-9 mb-1">Experience ID</p>
-							<p className="text-2 text-gray-11 font-mono">
-								{experienceId}
-							</p>
-						</div>
-						<div>
-							<p className="text-3 text-gray-9 mb-1">User ID</p>
-							<p className="text-2 text-gray-11 font-mono">
-								{userId}
-							</p>
-						</div>
-						{(experience as any).description && (
-							<div>
-								<p className="text-3 text-gray-9 mb-1">Description</p>
-								<p className="text-3 text-gray-10">
-									{(experience as any).description}
-								</p>
-							</div>
-						)}
-					</div>
-				</div>
-
-				{/* Actions Card */}
-				<div className="bg-gray-a2 border border-gray-a4 rounded-lg p-8">
-					<h2 className="text-7 font-semibold text-gray-12 mb-4">
-						Quick Actions
-					</h2>
-					<div className="flex gap-4 flex-wrap">
-						<Button variant="classic" size="4">
-							View Dashboard
-						</Button>
-						<Button variant="ghost" size="4">
-							Settings
-						</Button>
-					</div>
-				</div>
-
-				{/* Info Card - Frosted UI styling */}
-				<div className="mt-6 bg-gray-a2 border border-gray-a4 rounded-lg p-6">
-					<p className="text-2 text-gray-9">
-						This is the experience view page. Replace this content with your
-						actual Tier List application interface.
-					</p>
-				</div>
-			</div>
-		</div>
+		<TierListGallery
+			tierLists={tierLists}
+			userRole={userRole}
+			userId={userId}
+		/>
 	);
 }
