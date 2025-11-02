@@ -49,8 +49,8 @@ export default async function ExperiencePage({
 	const access = await whopsdk.users.checkAccess(experienceId, { id: userId });
 
 	// Check if access.has_access is true
-	// Note: The SDK uses camelCase, so it's `hasAccess` not `has_access`
-	if (!access.hasAccess) {
+	// Note: The SDK uses snake_case, so it's `has_access` not `hasAccess`
+	if (!access.has_access) {
 		// If no access, return an access denied message
 		return (
 			<div className="min-h-screen flex items-center justify-center p-8 bg-gray-a1">
