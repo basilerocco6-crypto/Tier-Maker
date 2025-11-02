@@ -95,73 +95,117 @@ export function TierRow({
 				setDroppableRef(node);
 			}}
 			style={style}
-			className="flex gap-4 p-4 rounded-lg mb-2"
+			className="flex items-stretch rounded-lg mb-2 overflow-hidden"
 			suppressHydrationWarning
 		>
-			{isEditable && (
-				<div
-					{...sortableAttributes}
-					{...sortableListeners}
-					className="cursor-grab active:cursor-grabbing flex items-center px-2"
-					suppressHydrationWarning
-				>
-					<svg
-						width="16"
-						height="16"
-						viewBox="0 0 16 16"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<path
-							d="M6 4H10M6 8H10M6 12H10"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-						/>
-					</svg>
-				</div>
-			)}
-
-			<div className="flex-1 flex items-center gap-2">
+			{/* Tier Label Section */}
+			<div
+				style={{ backgroundColor: tier.color }}
+				className="flex items-center justify-center px-6 min-w-[80px]"
+			>
 				{isEditable ? (
 					<input
 						value={tier.name}
 						onChange={(e) => onTierNameChange?.(tier.id, e.target.value)}
-						className="w-24 font-bold text-gray-12 h-8 px-2 py-1 rounded border border-gray-a4 bg-gray-a1/20 focus:outline-none focus:ring-2 focus:ring-blue-6 focus:border-blue-6"
-						style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+						className="w-12 font-bold text-gray-12 text-center bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-gray-12 rounded px-1"
+						style={{ color: tier.color === "#ffff7f" || tier.color === "#7fff7f" ? "#000" : "#fff" }}
 					/>
 				) : (
-					<span className="font-bold text-4 text-gray-12">{tier.name}</span>
+					<span
+						className="font-bold text-6"
+						style={{ color: tier.color === "#ffff7f" || tier.color === "#7fff7f" ? "#000" : "#fff" }}
+					>
+						{tier.name}
+					</span>
 				)}
+			</div>
 
-				{isEditable && (
-					<>
+			{/* Items Area */}
+			<div
+				className="flex-1 bg-gray-a4 p-4 flex gap-2 flex-wrap items-center min-h-[80px]"
+			>
+				{items.length === 0 ? (
+					<span className="text-gray-9 text-2">Drop items here</span>
+				) : (
+					items.map((item) => (
+						<DraggableItem
+							key={item.id}
+							item={item}
+							isEditable={isEditable || false}
+						/>
+					))
+				)}
+			</div>
+
+			{/* Settings and Reorder Icons */}
+			{isEditable && (
+				<div className="flex items-center gap-2 px-2 bg-gray-a3">
+					{/* Settings Gear Icon - Color Picker */}
+					<div className="relative">
 						<input
 							type="color"
 							value={tier.color}
 							onChange={(e) => onTierColorChange?.(tier.id, e.target.value)}
-							className="w-12 h-8 rounded border border-gray-a4 cursor-pointer"
+							className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+							title="Change color"
 						/>
-						<Button
-							variant="classic"
-							size="2"
-							onClick={() => onTierDelete?.(tier.id)}
+						<button
+							type="button"
+							className="p-2 hover:bg-gray-a4 rounded transition-colors cursor-pointer"
+							title="Settings - Click to change color"
 						>
-							Delete
-						</Button>
-					</>
-				)}
-			</div>
+						<svg
+							width="20"
+							height="20"
+							viewBox="0 0 20 20"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							className="text-gray-12"
+						>
+							<path
+								d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							/>
+							<path
+								d="M15.6066 11.8182C15.5497 11.9554 15.4793 12.0874 15.3955 12.2123L15.3758 12.2425C15.2382 12.4567 15.0742 12.6576 14.8875 12.8388L14.8644 12.8619C14.7382 12.9837 14.6008 13.0938 14.4539 13.191L14.4189 13.2123C14.2939 13.2962 14.1619 13.3666 14.0247 13.4235L13.9927 13.4361C13.6584 13.5667 13.3079 13.6289 12.9545 13.6211H12.9091C12.5556 13.6289 12.2051 13.5667 11.8708 13.4361L11.8388 13.4235C11.7016 13.3666 11.5696 13.2962 11.4446 13.2123L11.4096 13.191C11.2627 13.0938 11.1253 12.9837 10.9991 12.8619L10.976 12.8388C10.7893 12.6576 10.6253 12.4567 10.4877 12.2425L10.468 12.2123C10.3842 12.0874 10.3138 11.9554 10.2569 11.8182L10.2443 11.7862C10.1137 11.4519 10.0515 11.1014 10.0593 10.748H10.0606C10.0528 10.3945 10.115 10.044 10.2456 9.70976L10.2582 9.67775C10.3151 9.54057 10.3855 9.40857 10.4693 9.28363L10.489 9.25343C10.6266 9.03923 10.7906 8.83831 10.9773 8.65711L11.0004 8.63401C11.1266 8.51223 11.264 8.40213 11.4109 8.30489L11.4459 8.28363C11.5709 8.19979 11.7029 8.12936 11.8401 8.07247L11.8721 8.05987C12.2064 7.92927 12.5569 7.86706 12.9103 7.87486H12.9557C13.3092 7.86706 13.6597 7.92927 13.994 8.05987L14.026 8.07247C14.1632 8.12936 14.2952 8.19979 14.4202 8.28363L14.4552 8.30489C14.6021 8.40213 14.7395 8.51223 14.8657 8.63401L14.8888 8.65711C15.0755 8.83831 15.2395 9.03923 15.3771 9.25343L15.3968 9.28363C15.4806 9.40857 15.551 9.54057 15.6079 9.67775L15.6205 9.70976C15.7511 10.044 15.8133 10.3945 15.8055 10.748H15.8068C15.8146 11.1014 15.7524 11.4519 15.6218 11.7862L15.6092 11.8182H15.6066Z"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							/>
+						</svg>
+						</button>
+					</div>
 
-			<div className="flex gap-2 flex-wrap">
-				{items.map((item) => (
-					<DraggableItem
-						key={item.id}
-						item={item}
-						isEditable={isEditable || false}
-					/>
-				))}
-			</div>
+					{/* Reorder Handle */}
+					<div
+						{...sortableAttributes}
+						{...sortableListeners}
+						className="cursor-grab active:cursor-grabbing p-2 hover:bg-gray-a4 rounded transition-colors"
+						title="Reorder"
+					>
+						<svg
+							width="20"
+							height="20"
+							viewBox="0 0 20 20"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							className="text-gray-12"
+						>
+							<path
+								d="M6 6L10 2L14 6M6 14L10 18L14 14"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							/>
+						</svg>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

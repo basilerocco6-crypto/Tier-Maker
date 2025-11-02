@@ -31,6 +31,9 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 	);
 	const [isSaving, setIsSaving] = useState(false);
 	const [showPublishModal, setShowPublishModal] = useState(false);
+	const [imageShape, setImageShape] = useState<"square" | "circle">("square");
+	const [selectedFileName, setSelectedFileName] = useState<string>("");
+	const [showTierSettings, setShowTierSettings] = useState<string | null>(null);
 
 	const handleSaveDraft = async () => {
 		setIsSaving(true);
@@ -170,6 +173,10 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 		const files = event.target.files;
 		if (!files) return;
 
+		if (files.length > 0) {
+			setSelectedFileName(files.length === 1 ? files[0].name : `${files.length} files selected`);
+		}
+
 		Array.from(files).forEach((file) => {
 			if (file.type.startsWith("image/")) {
 				const reader = new FileReader();
@@ -186,27 +193,32 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 		});
 	};
 
+	const handleDownload = () => {
+		// TODO: Implement download functionality (export as image or JSON)
+		alert("Download functionality coming soon!");
+	};
+
 	const unplacedItems = itemBank.filter((item) => !placement[item.id]);
 
 	return (
-		<div className="min-h-screen p-8 bg-gray-a1">
+		<div className="min-h-screen p-8 bg-gray-a2">
 			<div className="max-w-7xl mx-auto">
 				{/* Fixed Header */}
 				<div className="mb-6 flex items-center justify-between gap-4">
 					<div className="flex-1">
-					{isEditingTitle ? (
-						<input
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
-							onBlur={() => setIsEditingTitle(false)}
-							onKeyDown={(e) => {
-								if (e.key === "Enter") {
-									setIsEditingTitle(false);
-								}
-							}}
-							className="text-9 font-bold h-9 px-3 py-1 rounded-md border border-gray-a4 bg-gray-a1 text-gray-12 focus:outline-none focus:ring-2 focus:ring-blue-6 focus:border-blue-6"
-							autoFocus
-						/>
+						{isEditingTitle ? (
+							<input
+								value={title}
+								onChange={(e) => setTitle(e.target.value)}
+								onBlur={() => setIsEditingTitle(false)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter") {
+										setIsEditingTitle(false);
+									}
+								}}
+								className="text-9 font-bold h-9 px-3 py-1 rounded-md border border-gray-a4 bg-gray-a1 text-gray-12 focus:outline-none focus:ring-2 focus:ring-blue-6 focus:border-blue-6"
+								autoFocus
+							/>
 						) : (
 							<h1
 								className="text-9 font-bold text-gray-12 cursor-pointer hover:text-gray-10 transition-colors"
@@ -237,7 +249,7 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 				</div>
 
 				{/* TierListBoard */}
-				<div className="mb-6" suppressHydrationWarning>
+				<div className="mb-8" suppressHydrationWarning>
 					<TierListBoard
 						tierRows={tierRows}
 						items={itemBank}
@@ -252,20 +264,68 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 					/>
 				</div>
 
-				{/* ItemBank */}
-				<ItemBank
-					items={itemBank}
-					unplacedItems={unplacedItems}
-					isEditable={true}
-					onUploadClick={() => {
-						const input = document.createElement("input");
-						input.type = "file";
-						input.accept = "image/*";
-						input.multiple = true;
-						input.onchange = (e) => handleImageUpload(e as any);
-						input.click();
-					}}
-				/>
+				{/* Image Upload Section */}
+				<div className="mb-8">
+					<p className="text-3 text-gray-10 mb-4">
+						Upload images to be used in your tier list. Images are not saved to the website, but will be included in your download.
+					</p>
+					<div className="flex items-center gap-4">
+						<label className="cursor-pointer">
+							<input
+								type="file"
+								accept="image/*"
+								multiple
+								onChange={handleImageUpload}
+								className="hidden"
+								id="image-upload-input"
+							/>
+							<Button
+								variant="ghost"
+								size="3"
+								as="span"
+								onClick={() => document.getElementById("image-upload-input")?.click()}
+							>
+								Choose file
+							</Button>
+						</label>
+						<span className="text-3 text-gray-9">
+							{selectedFileName || "No file selected"}
+						</span>
+					</div>
+				</div>
+
+				{/* ItemBank - Hidden items area */}
+				{unplacedItems.length > 0 && (
+					<div className="mb-8">
+						<ItemBank
+							items={itemBank}
+							unplacedItems={unplacedItems}
+							isEditable={true}
+							onUploadClick={() => {
+								document.getElementById("image-upload-input")?.click();
+							}}
+						/>
+					</div>
+				)}
+
+				{/* Action Buttons */}
+				<div className="flex items-center justify-center gap-4 mb-4">
+					<select
+						value={imageShape}
+						onChange={(e) => setImageShape(e.target.value as "square" | "circle")}
+						className="px-4 py-2 rounded-md border border-gray-a4 bg-gray-a1 text-gray-12 focus:outline-none focus:ring-2 focus:ring-blue-6"
+					>
+						<option value="square">Square Images</option>
+						<option value="circle">Circle Images</option>
+					</select>
+					<Button
+						variant="classic"
+						size="4"
+						onClick={handleDownload}
+					>
+						Download
+					</Button>
+				</div>
 
 				{/* PublishModal */}
 				{showPublishModal && (
