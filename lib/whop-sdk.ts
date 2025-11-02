@@ -6,33 +6,26 @@ let _whopsdk: Whop | null = null;
 
 function getWhopSdk(): Whop {
 	if (!_whopsdk) {
-		const appID = process.env.NEXT_PUBLIC_WHOP_APP_ID;
-		const apiKey = process.env.WHOP_API_KEY;
-		const webhookSecret = process.env.WHOP_WEBHOOK_SECRET;
+		const appID = process.env.NEXT_PUBLIC_WHOP_APP_ID || "placeholder-app-id";
+		const apiKey = process.env.WHOP_API_KEY || "placeholder-api-key";
+		const webhookSecret = process.env.WHOP_WEBHOOK_SECRET || "";
 
-		// Only create SDK if required vars are present (runtime)
-		// During build, these may be undefined - that's OK
-		if (appID && apiKey) {
-			_whopsdk = new Whop({
-				appID,
-				apiKey,
-				webhookKey: webhookSecret ? btoa(webhookSecret) : "",
-			});
-		} else {
-			// Create a minimal SDK instance for build-time
-			// This will fail at runtime if vars aren't set, which is expected
-			_whopsdk = new Whop({
-				appID: appID || "",
-				apiKey: apiKey || "",
-				webhookKey: webhookSecret ? btoa(webhookSecret) : "",
-			});
-		}
+		// Create SDK instance - will work at runtime when real env vars are set
+		// During build, placeholder values prevent errors
+		_whopsdk = new Whop({
+			appID,
+			apiKey,
+			webhookKey: webhookSecret ? btoa(webhookSecret) : btoa("placeholder-secret"),
+		});
 	}
 	return _whopsdk;
 }
 
+// Export a Proxy that lazily initializes the SDK
 export const whopsdk = new Proxy({} as Whop, {
 	get(_target, prop) {
-		return getWhopSdk()[prop as keyof Whop];
+		const sdk = getWhopSdk();
+		const value = sdk[prop as keyof Whop];
+		return typeof value === "function" ? value.bind(sdk) : value;
 	},
-});
+}) as Whop;
