@@ -92,15 +92,45 @@ async function getUserRole(userId: string | null, companyId?: string): Promise<"
 }
 
 export default async function DashboardPage() {
-	const userId = await getUserId();
-	const userRole = await getUserRole(userId);
-	const tierLists = await getTierLists(userId, userRole);
+	try {
+		const userId = await getUserId();
+		const userRole = await getUserRole(userId);
+		const tierLists = await getTierLists(userId, userRole);
 
-	return (
-		<TierListGallery
-			tierLists={tierLists}
-			userRole={userRole}
-			userId={userId || "dev-user"}
-		/>
-	);
+		return (
+			<TierListGallery
+				tierLists={tierLists}
+				userRole={userRole}
+				userId={userId || "dev-user"}
+			/>
+		);
+	} catch (error: any) {
+		// Handle authentication errors gracefully
+		console.error("[DASHBOARD PAGE] Error:", error);
+		
+		// If accessing directly (not through Whop iframe), show a helpful message
+		return (
+			<div className="min-h-screen flex items-center justify-center p-8 bg-gray-a1">
+				<div className="max-w-md w-full bg-gray-a2 border border-gray-a4 rounded-lg p-8 text-center">
+					<h1 className="text-9 font-bold text-gray-12 mb-4">
+						Authentication Required
+					</h1>
+					<p className="text-4 text-gray-10 mb-4">
+						This app must be accessed through the Whop platform.
+					</p>
+					<p className="text-3 text-gray-9 mb-2">
+						To use this app:
+					</p>
+					<ul className="text-2 text-gray-9 text-left space-y-2 mb-6">
+						<li>• Access it through your Whop experience</li>
+						<li>• Ensure you're logged in to Whop</li>
+						<li>• Use the Whop app iframe</li>
+					</ul>
+					<p className="text-2 text-gray-8">
+						If you're the app developer, make sure your app is properly configured in the Whop dashboard.
+					</p>
+				</div>
+			</div>
+		);
+	}
 }
