@@ -207,20 +207,14 @@ export function TierRow({
 						<svg
 							width="20"
 							height="20"
-							viewBox="0 0 20 20"
+							viewBox="0 0 425 425"
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
 						>
-							{/* Up chevron - solid triangle pointing up */}
-							<path
-								d="M10 5L7 9L13 9L10 5Z"
-								fill="white"
-							/>
-							{/* Down chevron - solid triangle pointing down with gap */}
-							<path
-								d="M10 15L7 11L13 11L10 15Z"
-								fill="white"
-							/>
+							{/* Up arrow */}
+							<polygon points="212.5,0 19.371,192.5 405.629,192.5" fill="white"/>
+							{/* Down arrow */}
+							<polygon points="212.5,425 405.629,232.5 19.371,232.5" fill="white"/>
 						</svg>
 					</div>
 				</div>
