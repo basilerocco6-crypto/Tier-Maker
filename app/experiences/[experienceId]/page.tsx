@@ -106,6 +106,8 @@ export default async function ExperiencePage({
 	try {
 		const result = await whopsdk.verifyUserToken(await headers());
 		userId = result.userId;
+		console.log("[EXPERIENCE PAGE] Authenticated userId:", userId);
+		console.log("[EXPERIENCE PAGE] Agent userId from env:", process.env.NEXT_PUBLIC_WHOP_AGENT_USER_ID);
 	} catch (error: any) {
 		// If token is missing, show a helpful error message
 		return (
