@@ -20,8 +20,8 @@ export function TierListGallery({
 	
 	// Helper function for navigation that works in both iframe and localhost
 	const navigateTo = (path: string) => {
-		if (iframeSdk && typeof iframeSdk.navigate === "function") {
-			iframeSdk.navigate(path);
+		if (iframeSdk && typeof (iframeSdk as any).navigate === "function") {
+			(iframeSdk as any).navigate(path);
 		} else {
 			// Fallback to window.location for localhost/development
 			window.location.href = path;
