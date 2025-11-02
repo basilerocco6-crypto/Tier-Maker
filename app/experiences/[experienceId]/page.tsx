@@ -32,6 +32,19 @@ async function getUserRole(userId: string | null, companyId?: string): Promise<"
 		return "admin";
 	}
 
+	// TEMPORARY: Grant admin to specific user IDs for testing
+	// TODO: Remove this once proper role detection is working
+	const adminUserIds = [
+		"user_iy1RcpJFL1pKl", // Agent user ID from env
+		"user_zTz43UvWWvtlE", // User shown in debug (might be company owner)
+		// Add more user IDs here for testing
+	].filter(Boolean); // Remove undefined/null values
+	
+	if (adminUserIds.includes(userId)) {
+		console.log("[GET USER ROLE] ✅ User is in admin list, granting admin:", userId);
+		return "admin";
+	}
+
 	// Check if user is admin (Owner or Admin role in Whop company)
 	try {
 		// Get company ID from environment or parameter
