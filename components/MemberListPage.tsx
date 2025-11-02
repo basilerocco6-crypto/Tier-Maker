@@ -6,6 +6,7 @@ import { Button } from "@whop/react/components";
 import { TierListBoard } from "./TierListBoard";
 import { ItemBank } from "./ItemBank";
 import { PurchaseButton } from "./PurchaseButton";
+import { NotificationModal } from "./NotificationModal";
 import type {
 	TierListTemplate,
 	TierListSubmission,
@@ -75,10 +76,18 @@ export function MemberListPage({
 		}
 	};
 
+	const [notification, setNotification] = useState<{
+		isOpen: boolean;
+		message: string;
+	}>({ isOpen: false, message: "" });
+
 	const handleShare = async () => {
 		// Share to Discord functionality
 		// This would use html-to-image to capture the board
-		alert("Share functionality coming soon!");
+		setNotification({
+			isOpen: true,
+			message: "Share functionality coming soon!",
+		});
 	};
 
 	// State A: Locked, Published List (View-Only)
@@ -138,6 +147,16 @@ export function MemberListPage({
 					items={template.itemBank}
 					unplacedItems={unplacedItems}
 					isEditable={true}
+				/>
+
+				{/* NotificationModal */}
+				<NotificationModal
+					isOpen={notification.isOpen}
+					type="info"
+					message={notification.message}
+					onClose={() => setNotification({ isOpen: false, message: "" })}
+					autoClose={true}
+					autoCloseDelay={2000}
 				/>
 			</div>
 		</div>

@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@whop/react/components";
 import { useIframeSdk } from "@whop/react";
 import { TierListCard } from "@/components/TierListCard";
+import { ConfirmModal } from "@/components/ConfirmModal";
 import type { TierListTemplate } from "@/lib/types";
 
 interface TierListGalleryProps {
@@ -17,6 +19,10 @@ export function TierListGallery({
 	userId,
 }: TierListGalleryProps) {
 	const iframeSdk = useIframeSdk();
+	const [deleteConfirm, setDeleteConfirm] = useState<{
+		isOpen: boolean;
+		templateId: string | null;
+	}>({ isOpen: false, templateId: null });
 	
 	// Helper function for navigation that works in both iframe and localhost
 	const navigateTo = (path: string) => {
@@ -28,11 +34,16 @@ export function TierListGallery({
 		}
 	};
 
-	const handleDelete = async (templateId: string) => {
-		if (confirm("Are you sure you want to delete this list?")) {
-			await fetch(`/api/templates/${templateId}`, {
+	const handleDeleteClick = (templateId: string) => {
+		setDeleteConfirm({ isOpen: true, templateId });
+	};
+
+	const handleDeleteConfirm = async () => {
+		if (deleteConfirm.templateId) {
+			await fetch(`/api/templates/${deleteConfirm.templateId}`, {
 				method: "DELETE",
 			});
+			setDeleteConfirm({ isOpen: false, templateId: null });
 			window.location.reload();
 		}
 	};
@@ -67,7 +78,7 @@ export function TierListGallery({
 								template={template}
 								userRole={userRole}
 								onEdit={() => navigateTo(`/admin/builder/${template.id}`)}
-								onDelete={() => handleDelete(template.id)}
+								onDelete={() => handleDeleteClick(template.id)}
 								onViewSubmissions={() => navigateTo(`/admin/submissions/${template.id}`)}
 								onView={() => navigateTo(`/list/${template.id}`)}
 								onStart={() => navigateTo(`/list/${template.id}`)}
@@ -75,6 +86,18 @@ export function TierListGallery({
 						))}
 					</div>
 				)}
+
+				{/* Confirm Delete Modal */}
+				<ConfirmModal
+					isOpen={deleteConfirm.isOpen}
+					title="Delete Tier List"
+					message="Are you sure you want to delete this list? This action cannot be undone."
+					confirmText="Delete"
+					cancelText="Cancel"
+					onConfirm={handleDeleteConfirm}
+					onCancel={() => setDeleteConfirm({ isOpen: false, templateId: null })}
+					variant="danger"
+				/>
 			</div>
 		</div>
 	);

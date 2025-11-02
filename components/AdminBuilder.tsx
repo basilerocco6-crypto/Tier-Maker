@@ -7,6 +7,7 @@ import { Button } from "@whop/react/components";
 import { TierListBoard } from "./TierListBoard";
 import { ItemBank } from "./ItemBank";
 import { PublishModal } from "./PublishModal";
+import { NotificationModal } from "./NotificationModal";
 import type { TierListTemplate, TierRow, TierListItem } from "@/lib/types";
 
 interface AdminBuilderProps {
@@ -37,6 +38,11 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 	const [selectedFileName, setSelectedFileName] = useState<string>("");
 	const [showTierSettings, setShowTierSettings] = useState<string | null>(null);
 	const [activeDragId, setActiveDragId] = useState<string | null>(null);
+	const [notification, setNotification] = useState<{
+		isOpen: boolean;
+		type: "success" | "error" | "info";
+		message: string;
+	}>({ isOpen: false, type: "info", message: "" });
 
 	// DnD sensors for the parent context
 	const sensors = useSensors(
@@ -113,10 +119,16 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 
 			if (response.ok) {
 				const data = await response.json();
-				alert("Draft saved successfully!");
+				setNotification({
+					isOpen: true,
+					type: "success",
+					message: "Draft saved successfully!",
+				});
 				// If this was a new template, redirect to edit mode
 				if (listId === "new" && data.template?.id) {
-					window.location.href = `/admin/builder/${data.template.id}`;
+					setTimeout(() => {
+						window.location.href = `/admin/builder/${data.template.id}`;
+					}, 1500);
 				}
 			} else {
 				const errorData = await response.json().catch(() => ({}));
@@ -125,7 +137,11 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 			}
 		} catch (error) {
 			console.error("Error saving draft:", error);
-			alert("Failed to save draft. Please try again.");
+			setNotification({
+				isOpen: true,
+				type: "error",
+				message: "Failed to save draft. Please try again.",
+			});
 		} finally {
 			setIsSaving(false);
 		}
@@ -161,15 +177,25 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 
 			if (response.ok) {
 				const data = await response.json();
-				alert("Tier list published successfully!");
-				// Redirect to dashboard
-				window.location.href = "/";
+				setNotification({
+					isOpen: true,
+					type: "success",
+					message: "Tier list published successfully!",
+				});
+				// Redirect to dashboard after showing notification
+				setTimeout(() => {
+					window.location.href = "/";
+				}, 1500);
 			} else {
 				throw new Error("Failed to publish");
 			}
 		} catch (error) {
 			console.error("Error publishing:", error);
-			alert("Failed to publish. Please try again.");
+			setNotification({
+				isOpen: true,
+				type: "error",
+				message: "Failed to publish. Please try again.",
+			});
 		} finally {
 			setIsSaving(false);
 			setShowPublishModal(false);
@@ -265,7 +291,11 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 
 	const handleDownload = () => {
 		// TODO: Implement download functionality (export as image or JSON)
-		alert("Download functionality coming soon!");
+		setNotification({
+			isOpen: true,
+			type: "info",
+			message: "Download functionality coming soon!",
+		});
 	};
 
 	const unplacedItems = itemBank.filter((item) => !placement[item.id]);
@@ -426,6 +456,16 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 						isSaving={isSaving}
 					/>
 				)}
+
+				{/* NotificationModal */}
+				<NotificationModal
+					isOpen={notification.isOpen}
+					type={notification.type}
+					message={notification.message}
+					onClose={() => setNotification({ isOpen: false, type: "info", message: "" })}
+					autoClose={notification.type === "success"}
+					autoCloseDelay={2000}
+				/>
 			</div>
 		</div>
 	);
