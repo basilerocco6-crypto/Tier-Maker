@@ -179,13 +179,13 @@ export function TierRow({
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								{/* 8-tooth gear with trapezoidal teeth (wider at base, flat top) */}
+								{/* 8-tooth gear with trapezoidal teeth - proper gear shape */}
 								<path
-									d="M10 1 L11.5 3.5 L13.5 3.5 L15 1.5 L17 4 L16.5 6 L18 8 L15.5 8.5 L15 10.5 L17 13 L15 15.5 L12.5 15 L10 17.5 L7.5 15 L5 15.5 L3 13 L5 10.5 L4.5 8.5 L2 8 L3.5 6 L3 4 L5 1.5 L7 3.5 L9 3.5 L10 1 Z"
+									d="M10 1.5 L11.3 3.8 L13.2 4.2 L14.5 2.5 L16.5 4.5 L15.8 6.5 L17.5 8 L15 9 L14.2 11 L16.2 12.5 L14.5 14.5 L12.2 14.2 L10 16.5 L7.8 14.2 L5.5 14.5 L3.8 12.5 L5.8 11 L5 9 L2.5 8 L4.2 6.5 L3.5 4.5 L5.5 2.5 L6.8 4.2 L8.7 3.8 L10 1.5 Z"
 									fill="white"
 								/>
-								{/* Center white body circle */}
-								<circle cx="10" cy="10" r="5" fill="white"/>
+								{/* Center white body circle connecting teeth */}
+								<circle cx="10" cy="10" r="5.5" fill="white"/>
 								{/* Center black hole */}
 								<circle cx="10" cy="10" r="2.5" fill="black"/>
 							</svg>
