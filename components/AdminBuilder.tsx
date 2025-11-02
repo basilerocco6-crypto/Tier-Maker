@@ -181,10 +181,27 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 	};
 
 	const handleItemMove = (itemId: string, _fromTierId: string | null, toTierId: string) => {
-		setPlacement((prev) => ({
-			...prev,
-			[itemId]: toTierId,
-		}));
+		setPlacement((prev) => {
+			// If moving to item-bank, remove the placement
+			if (toTierId === "item-bank") {
+				const newPlacement = { ...prev };
+				delete newPlacement[itemId];
+				return newPlacement;
+			}
+			// Otherwise, update the placement
+			return {
+				...prev,
+				[itemId]: toTierId,
+			};
+		});
+	};
+
+	const handleItemRemove = (itemId: string) => {
+		setPlacement((prev) => {
+			const newPlacement = { ...prev };
+			delete newPlacement[itemId];
+			return newPlacement;
+		});
 	};
 
 	const handleTierNameChange = (tierId: string, name: string) => {
@@ -318,12 +335,13 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 							onTierReorder={handleTierReorder}
 							onItemMove={handleItemMove}
 							onTierNameChange={handleTierNameChange}
-							onTierColorChange={handleTierColorChange}
-							onTierDelete={handleTierDelete}
-							onAddTier={handleAddTier}
-							parentDragStart={handleDragStart}
-							parentDragEnd={handleDragEnd}
-						/>
+						onTierColorChange={handleTierColorChange}
+						onTierDelete={handleTierDelete}
+						onAddTier={handleAddTier}
+						onItemRemove={handleItemRemove}
+						parentDragStart={handleDragStart}
+						parentDragEnd={handleDragEnd}
+					/>
 					</div>
 
 					{/* Image Upload Section */}

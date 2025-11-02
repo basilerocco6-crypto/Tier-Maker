@@ -16,10 +16,11 @@ interface TierRowProps {
 	onTierColorChange?: (tierId: string, color: string) => void;
 	onTierDelete?: (tierId: string) => void;
 	onItemClick?: (item: TierListItem) => void;
+	onItemRemove?: (itemId: string) => void;
 }
 
 // Draggable item component
-function DraggableItem({ item, isEditable }: { item: TierListItem; isEditable: boolean }) {
+function DraggableItem({ item, isEditable, onRemove }: { item: TierListItem; isEditable: boolean; onRemove?: () => void }) {
 	const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
 		id: item.id,
 		disabled: !isEditable,
@@ -41,12 +42,26 @@ function DraggableItem({ item, isEditable }: { item: TierListItem; isEditable: b
 	}
 
 	return (
-		<div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+		<div ref={setNodeRef} style={style} {...listeners} {...attributes} className="relative group">
 			<img
 				src={item.imageUrl}
 				alt="Tier item"
 				className="w-16 h-16 object-cover rounded cursor-pointer hover:scale-110 transition-transform"
 			/>
+			{isEditable && onRemove && (
+				<button
+					onClick={(e) => {
+						e.stopPropagation();
+						onRemove();
+					}}
+					className="absolute -top-2 -right-2 w-6 h-6 bg-red-6 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-7 cursor-pointer"
+					title="Remove item"
+				>
+					<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M9 3L3 9M3 3L9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+					</svg>
+				</button>
+			)}
 		</div>
 	);
 }
@@ -59,6 +74,7 @@ export function TierRow({
 	onTierColorChange,
 	onTierDelete,
 	onItemClick,
+	onItemRemove,
 }: TierRowProps) {
 	const [isMounted, setIsMounted] = useState(false);
 
@@ -132,6 +148,7 @@ export function TierRow({
 							key={item.id}
 							item={item}
 							isEditable={isEditable || false}
+							onRemove={() => onItemRemove?.(item.id)}
 						/>
 					))
 				)}

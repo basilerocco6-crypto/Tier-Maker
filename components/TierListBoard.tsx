@@ -22,6 +22,7 @@ interface TierListBoardProps {
 	onTierColorChange?: (tierId: string, color: string) => void;
 	onTierDelete?: (tierId: string) => void;
 	onAddTier?: () => void;
+	onItemRemove?: (itemId: string) => void;
 	parentDragStart?: (event: any) => void;
 	parentDragEnd?: (event: any) => void;
 }
@@ -37,6 +38,7 @@ export function TierListBoard({
 	onTierColorChange,
 	onTierDelete,
 	onAddTier,
+	onItemRemove,
 	parentDragStart,
 	parentDragEnd,
 }: TierListBoardProps) {
@@ -63,6 +65,7 @@ export function TierListBoard({
 						onTierNameChange={onTierNameChange}
 						onTierColorChange={onTierColorChange}
 						onTierDelete={onTierDelete}
+						onItemRemove={onItemRemove}
 					/>
 				))}
 				{isEditable && (
@@ -93,6 +96,7 @@ export function TierListBoard({
 						onTierNameChange={onTierNameChange}
 						onTierColorChange={onTierColorChange}
 						onTierDelete={onTierDelete}
+						onItemRemove={onItemRemove}
 					/>
 				))}
 			</SortableContext>
