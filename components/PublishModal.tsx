@@ -7,8 +7,7 @@ interface PublishModalProps {
 	onClose: () => void;
 	onPublish: (data: {
 		status: "published" | "open_for_submission";
-		accessType: "free" | "paid";
-		price?: number;
+		accessType: "free";
 	}) => void;
 	isSaving: boolean;
 }
