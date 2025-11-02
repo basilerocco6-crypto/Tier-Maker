@@ -111,11 +111,11 @@ export default async function ExperiencePage({
 								{userId}
 							</p>
 						</div>
-						{experience.description && (
+						{(experience as any).description && (
 							<div>
 								<p className="text-3 text-gray-9 mb-1">Description</p>
 								<p className="text-3 text-gray-10">
-									{experience.description}
+									{(experience as any).description}
 								</p>
 							</div>
 						)}
