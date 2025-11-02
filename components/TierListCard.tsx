@@ -5,20 +5,12 @@ import type { TierListTemplate } from "@/lib/types";
 
 interface TierListCardProps {
 	template: TierListTemplate;
-	userRole: "admin" | "member";
-	onEdit?: () => void;
-	onDelete?: () => void;
-	onViewSubmissions?: () => void;
 	onView?: () => void;
 	onStart?: () => void;
 }
 
 export function TierListCard({
 	template,
-	userRole,
-	onEdit,
-	onDelete,
-	onViewSubmissions,
 	onView,
 	onStart,
 }: TierListCardProps) {
@@ -57,43 +49,18 @@ export function TierListCard({
 				</div>
 			</div>
 			<div>
-				{userRole === "admin" ? (
-					<div className="flex gap-2 flex-wrap">
-						{template.status === "draft" && (
-							<>
-								<Button variant="ghost" size="3" onClick={onEdit}>
-									Edit
-								</Button>
-								<Button variant="classic" size="3" onClick={onDelete}>
-									Delete
-								</Button>
-							</>
-						)}
-						{template.status !== "draft" && (
-							<>
-								<Button variant="ghost" size="3" onClick={onEdit}>
-									Edit
-								</Button>
-								<Button variant="ghost" size="3" onClick={onViewSubmissions}>
-									View Submissions
-								</Button>
-							</>
-						)}
-					</div>
-				) : (
-					<div className="flex gap-2">
-						{template.status === "published" && (
-							<Button variant="classic" size="3" onClick={onView} className="w-full">
-								View
-							</Button>
-						)}
-						{template.status === "open_for_submission" && (
-							<Button variant="classic" size="3" onClick={onStart} className="w-full">
-								Start
-							</Button>
-						)}
-					</div>
-				)}
+				<div className="flex gap-2">
+					{template.status === "published" && (
+						<Button variant="classic" size="3" onClick={onView} className="w-full">
+							View
+						</Button>
+					)}
+					{template.status === "open_for_submission" && (
+						<Button variant="classic" size="3" onClick={onStart} className="w-full">
+							Start
+						</Button>
+					)}
+				</div>
 			</div>
 		</div>
 	);
