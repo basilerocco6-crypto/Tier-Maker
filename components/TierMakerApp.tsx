@@ -4,13 +4,11 @@ import { useEffect } from "react";
 import { useIframeSdk } from "@whop/react";
 import { Button } from "@whop/react/components";
 import { UserProfileLink } from "./UserProfileLink";
-import type { User } from "@whop/sdk";
-
 interface TierMakerAppProps {
 	experienceId: string;
 	userId: string;
 	experience: any; // Experience type from Whop SDK
-	user: User;
+	user: any; // User type from Whop SDK
 }
 
 /**
