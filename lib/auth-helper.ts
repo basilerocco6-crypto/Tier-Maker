@@ -54,8 +54,8 @@ export async function ensureUser(whopUserId: string) {
 				const whopUser = await whopsdk.users.retrieve(whopUserId);
 				user = await createOrUpdateUser({
 					whop_user_id: whopUserId,
-					whop_username: whopUser.username || null,
-					email: whopUser.email || null,
+					whop_username: whopUser.username || undefined,
+					email: whopUser.email || undefined,
 				});
 				console.log("[ENSURE USER] Created user:", {
 					whopUserId,

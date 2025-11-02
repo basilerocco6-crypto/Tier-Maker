@@ -99,8 +99,8 @@ async function handlePaymentSucceeded(payment: any) {
 				const whopUser = await whopsdk.users.retrieve(whopUserId);
 				user = await createOrUpdateUser({
 					whop_user_id: whopUserId,
-					whop_username: whopUser.username || null,
-					email: whopUser.email || null,
+					whop_username: whopUser.username || undefined,
+					email: whopUser.email || undefined,
 				});
 			} catch (error: any) {
 				console.error(
@@ -266,8 +266,8 @@ async function handleInvoicePaid(invoice: any) {
 				const whopUser = await whopsdk.users.retrieve(whopUserId);
 				user = await createOrUpdateUser({
 					whop_user_id: whopUserId,
-					whop_username: whopUser.username || null,
-					email: whopUser.email || null,
+					whop_username: whopUser.username || undefined,
+					email: whopUser.email || undefined,
 				});
 			} catch (error: any) {
 				console.error("[INVOICE PAID ERROR] Failed to fetch user from Whop:", error);
