@@ -76,11 +76,11 @@ export function PurchaseButton({
 
 			// Step 3: Handle response
 			if (res.status === "ok") {
-				// Store receipt_id for verification
-				const receiptId = res.data?.receipt_id;
+				// Store receiptId for verification
+				const receiptId = res.data?.receiptId || res.data?.receipt_id;
 				if (receiptId) {
 					console.log("[PURCHASE SUCCESS] Receipt ID:", receiptId);
-					// Optionally store receipt_id in localStorage for reference
+					// Optionally store receiptId in localStorage for reference
 					localStorage.setItem(
 						`purchase_${templateId}`,
 						JSON.stringify({
