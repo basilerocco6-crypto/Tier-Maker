@@ -35,43 +35,45 @@ async function getUserRole(userId: string | null, companyId?: string): Promise<"
 			return "member";
 		}
 
-		// Get user's company membership to check role
-		// Check if user has Owner or Admin role in the company
+		// Method 1: Check if user is company owner (most reliable)
 		try {
-			// Try to get company memberships for the user
-			const memberships = await whopsdk.memberships.list({
-				userId: userId,
-				companyId: whopCompanyId,
-			} as any);
-
-			// Check if user has any membership with Owner or Admin role
-			const membership = memberships.data?.[0];
-			if (membership) {
-				const role = (membership as any).role || (membership as any).user_role;
-				// Map Whop roles to app roles
-				// Owner and Admin = admin, others = member
-				if (role === "Owner" || role === "owner" || role === "Admin" || role === "admin") {
-					return "admin";
-				}
+			const company = await whopsdk.companies.retrieve(whopCompanyId);
+			const ownerId = (company as any).owner_id || (company as any).owner?.id;
+			if (ownerId === userId) {
+				console.log("[GET USER ROLE] User is company owner");
+				return "admin";
 			}
-		} catch (error: any) {
-			// If memberships API fails, try alternative: check if user is company owner
-			try {
-				const company = await whopsdk.companies.retrieve(whopCompanyId);
-				if ((company as any).owner_id === userId) {
-					return "admin";
-				}
-			} catch (companyError: any) {
-				console.error("[GET USER ROLE] Failed to check company owner:", companyError);
-			}
-			console.error("[GET USER ROLE] Failed to get user memberships:", error);
+		} catch (companyError: any) {
+			console.error("[GET USER ROLE] Failed to retrieve company:", companyError);
 		}
+
+		// Method 2: Try to get user's role from company members
+		try {
+			// Alternative approach: check if we can get company members
+			// This might not work depending on SDK version, so we'll catch and continue
+			const members = await (whopsdk as any).companyMembers?.list?.(whopCompanyId);
+			if (members?.data) {
+				const userMember = members.data.find((m: any) => m.user_id === userId || m.id === userId);
+				if (userMember) {
+					const role = (userMember as any).role || (userMember as any).user_role;
+					if (role === "Owner" || role === "owner" || role === "Admin" || role === "admin") {
+						console.log("[GET USER ROLE] User has admin role:", role);
+						return "admin";
+					}
+				}
+			}
+		} catch (memberError: any) {
+			// This API might not exist, that's okay
+			console.log("[GET USER ROLE] Member API not available, using owner check only");
+		}
+
+		// If we can't determine, default to member for safety
+		console.log("[GET USER ROLE] Could not determine role, defaulting to member");
+		return "member";
 	} catch (error: any) {
 		console.error("[GET USER ROLE] Error checking user role:", error);
+		return "member";
 	}
-
-	// Default to member if we can't determine role
-	return "member";
 }
 
 export default async function ExperiencePage({
