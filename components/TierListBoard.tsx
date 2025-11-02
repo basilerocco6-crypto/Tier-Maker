@@ -30,6 +30,8 @@ interface TierListBoardProps {
 	onTierColorChange?: (tierId: string, color: string) => void;
 	onTierDelete?: (tierId: string) => void;
 	onAddTier?: () => void;
+	parentDragStart?: (event: any) => void;
+	parentDragEnd?: (event: any) => void;
 }
 
 export function TierListBoard({
@@ -43,6 +45,8 @@ export function TierListBoard({
 	onTierColorChange,
 	onTierDelete,
 	onAddTier,
+	parentDragStart,
+	parentDragEnd,
 }: TierListBoardProps) {
 	const [activeId, setActiveId] = useState<string | null>(null);
 	const [isMounted, setIsMounted] = useState(false);
@@ -60,36 +64,33 @@ export function TierListBoard({
 
 	function handleDragStart(event: any) {
 		setActiveId(event.active.id);
+		parentDragStart?.(event);
 	}
 
 	function handleDragEnd(event: any) {
 		const { active, over } = event;
 
-		if (!over) {
-			setActiveId(null);
-			return;
-		}
-
-		if (active.id !== over.id) {
-			// Check if we're dragging a tier row or an item
+		// First, handle tier row reordering (if dragging a tier)
+		if (over && active.id !== over.id) {
 			const activeTier = tierRows.find((t) => t.id === active.id);
 			if (activeTier && isEditable) {
-				// Reordering tier rows
-				const oldIndex = tierRows.findIndex((t) => t.id === active.id);
-				const newIndex = tierRows.findIndex((t) => t.id === over.id);
-				const newTiers = arrayMove(tierRows, oldIndex, newIndex);
-				onTierReorder?.(newTiers);
-			} else {
-				// Moving items between tiers
-				const activeItem = items.find((i) => i.id === active.id);
-				if (activeItem) {
-					const fromTierId = placement[active.id] || null;
-					const toTierId = over.id as string;
-					onItemMove?.(active.id, fromTierId, toTierId);
+				// Check if over is also a tier row
+				const overTier = tierRows.find((t) => t.id === over.id);
+				if (overTier) {
+					// Reordering tier rows
+					const oldIndex = tierRows.findIndex((t) => t.id === active.id);
+					const newIndex = tierRows.findIndex((t) => t.id === over.id);
+					const newTiers = arrayMove(tierRows, oldIndex, newIndex);
+					onTierReorder?.(newTiers);
+					setActiveId(null);
+					parentDragEnd?.(event);
+					return;
 				}
 			}
 		}
 
+		// Let parent handle item movement
+		parentDragEnd?.(event);
 		setActiveId(null);
 	}
 

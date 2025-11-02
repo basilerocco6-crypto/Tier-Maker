@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { DndContext, DragOverlay, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Button } from "@whop/react/components";
 import { TierListBoard } from "./TierListBoard";
 import { ItemBank } from "./ItemBank";
@@ -34,6 +36,42 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 	const [imageShape, setImageShape] = useState<"square" | "circle">("square");
 	const [selectedFileName, setSelectedFileName] = useState<string>("");
 	const [showTierSettings, setShowTierSettings] = useState<string | null>(null);
+	const [activeDragId, setActiveDragId] = useState<string | null>(null);
+
+	// DnD sensors for the parent context
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		})
+	);
+
+	// Handle drag and drop at the AdminBuilder level
+	const handleDragStart = (event: any) => {
+		setActiveDragId(event.active.id);
+	};
+
+	const handleDragEnd = (event: any) => {
+		const { active, over } = event;
+		setActiveDragId(null);
+
+		if (!over) return;
+
+		// Handle item moves from ItemBank to TierRows (or between TierRows)
+		if (active.id !== over.id) {
+			const activeItem = itemBank.find((i) => i.id === active.id);
+			if (activeItem) {
+				const fromTierId = placement[active.id] || null;
+				const toTierId = over.id as string;
+				
+				// Check if over.id is a tier row
+				const isTierRow = tierRows.find((t) => t.id === toTierId);
+				if (isTierRow || toTierId === "item-bank") {
+					handleItemMove(active.id, fromTierId, toTierId);
+				}
+			}
+		}
+	};
 
 	const handleSaveDraft = async () => {
 		setIsSaving(true);
@@ -248,65 +286,83 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 					</div>
 				</div>
 
-				{/* TierListBoard */}
-				<div className="mb-8" suppressHydrationWarning>
-					<TierListBoard
-						tierRows={tierRows}
-						items={itemBank}
-						placement={placement}
-						isEditable={true}
-						onTierReorder={handleTierReorder}
-						onItemMove={handleItemMove}
-						onTierNameChange={handleTierNameChange}
-						onTierColorChange={handleTierColorChange}
-						onTierDelete={handleTierDelete}
-						onAddTier={handleAddTier}
-					/>
-				</div>
-
-				{/* Image Upload Section */}
-				<div className="mb-8">
-					<p className="text-3 text-gray-10 mb-4">
-						Upload images to be used in your tier list. Images are not saved to the website, but will be included in your download.
-					</p>
-					<div className="flex items-center gap-4">
-						<input
-							type="file"
-							accept="image/*"
-							multiple
-							onChange={handleImageUpload}
-							className="hidden"
-							id="image-upload-input"
-						/>
-						<label htmlFor="image-upload-input" className="cursor-pointer">
-							<Button
-								variant="ghost"
-								size="3"
-								type="button"
-								onClick={() => document.getElementById("image-upload-input")?.click()}
-							>
-								Choose file
-							</Button>
-						</label>
-						<span className="text-3 text-gray-9">
-							{selectedFileName || "No file selected"}
-						</span>
-					</div>
-				</div>
-
-				{/* ItemBank - Hidden items area */}
-				{unplacedItems.length > 0 && (
-					<div className="mb-8">
-						<ItemBank
+				{/* Wrap TierListBoard and ItemBank in a single DndContext */}
+				<DndContext
+					sensors={sensors}
+					collisionDetection={closestCenter}
+					onDragStart={handleDragStart}
+					onDragEnd={handleDragEnd}
+				>
+					{/* TierListBoard */}
+					<div className="mb-8" suppressHydrationWarning>
+						<TierListBoard
+							tierRows={tierRows}
 							items={itemBank}
-							unplacedItems={unplacedItems}
+							placement={placement}
 							isEditable={true}
-							onUploadClick={() => {
-								document.getElementById("image-upload-input")?.click();
-							}}
+							onTierReorder={handleTierReorder}
+							onItemMove={handleItemMove}
+							onTierNameChange={handleTierNameChange}
+							onTierColorChange={handleTierColorChange}
+							onTierDelete={handleTierDelete}
+							onAddTier={handleAddTier}
+							parentDragStart={handleDragStart}
+							parentDragEnd={handleDragEnd}
 						/>
 					</div>
-				)}
+
+					{/* Image Upload Section */}
+					<div className="mb-8">
+						<p className="text-3 text-gray-10 mb-4">
+							Upload images to be used in your tier list. Images are not saved to the website, but will be included in your download.
+						</p>
+						<div className="flex items-center gap-4">
+							<input
+								type="file"
+								accept="image/*"
+								multiple
+								onChange={handleImageUpload}
+								className="hidden"
+								id="image-upload-input"
+							/>
+							<label htmlFor="image-upload-input" className="cursor-pointer">
+								<Button
+									variant="ghost"
+									size="3"
+									type="button"
+									onClick={() => document.getElementById("image-upload-input")?.click()}
+								>
+									Choose file
+								</Button>
+							</label>
+							<span className="text-3 text-gray-9">
+								{selectedFileName || "No file selected"}
+							</span>
+						</div>
+					</div>
+
+					{/* ItemBank - Hidden items area */}
+					{unplacedItems.length > 0 && (
+						<div className="mb-8">
+							<ItemBank
+								items={itemBank}
+								unplacedItems={unplacedItems}
+								isEditable={true}
+								onUploadClick={() => {
+									document.getElementById("image-upload-input")?.click();
+								}}
+							/>
+						</div>
+					)}
+
+					<DragOverlay>
+						{activeDragId ? (
+							<div className="w-16 h-16 bg-gray-a2 border border-gray-a4 rounded-lg shadow-lg">
+								{/* Drag preview */}
+							</div>
+						) : null}
+					</DragOverlay>
+				</DndContext>
 
 				{/* Action Buttons */}
 				<div className="flex items-center justify-center gap-4 mb-4">
