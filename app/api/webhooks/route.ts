@@ -100,7 +100,8 @@ async function handlePaymentSucceeded(payment: any) {
 				user = await createOrUpdateUser({
 					whop_user_id: whopUserId,
 					whop_username: whopUser.username || undefined,
-					email: whopUser.email || undefined,
+					// Email is not available in Whop User API response
+					// email: (whopUser as any).email || undefined,
 				});
 			} catch (error: any) {
 				console.error(
@@ -267,7 +268,8 @@ async function handleInvoicePaid(invoice: any) {
 				user = await createOrUpdateUser({
 					whop_user_id: whopUserId,
 					whop_username: whopUser.username || undefined,
-					email: whopUser.email || undefined,
+					// Email is not available in Whop User API response
+					// email: (whopUser as any).email || undefined,
 				});
 			} catch (error: any) {
 				console.error("[INVOICE PAID ERROR] Failed to fetch user from Whop:", error);

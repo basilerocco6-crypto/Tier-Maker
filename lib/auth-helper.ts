@@ -55,7 +55,8 @@ export async function ensureUser(whopUserId: string) {
 				user = await createOrUpdateUser({
 					whop_user_id: whopUserId,
 					whop_username: whopUser.username || undefined,
-					email: whopUser.email || undefined,
+					// Email is not available in Whop User API response
+					// email: (whopUser as any).email || undefined,
 				});
 				console.log("[ENSURE USER] Created user:", {
 					whopUserId,
