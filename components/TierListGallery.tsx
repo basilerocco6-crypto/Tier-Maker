@@ -42,21 +42,15 @@ export function TierListGallery({
 			<div className="max-w-7xl mx-auto">
 				<div className="flex justify-between items-center mb-8">
 					<h1 className="text-9 font-bold text-gray-12">Tier List Gallery</h1>
-					<div className="flex items-center gap-4">
-						{/* Debug info - remove in production */}
-						<span className="text-2 text-gray-9">
-							Role: {userRole} | User: {userId.slice(0, 10)}...
-						</span>
-						{userRole === "admin" && (
-							<Button
-								variant="classic"
-								size="4"
-								onClick={() => navigateTo("/admin/builder/new")}
-							>
-								Create New List
-							</Button>
-						)}
-					</div>
+					{userRole === "admin" && (
+						<Button
+							variant="classic"
+							size="4"
+							onClick={() => navigateTo("/admin/builder/new")}
+						>
+							Create New List
+						</Button>
+					)}
 				</div>
 
 				{tierLists.length === 0 ? (
