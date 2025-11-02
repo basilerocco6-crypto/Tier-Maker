@@ -34,19 +34,22 @@ export async function POST(request: NextRequest): Promise<Response> {
 		const webhookData = whopsdk.webhooks.unwrap(requestBodyText, { headers });
 
 		// 4. Handle different webhook event types
-		// Support both snake_case (from Whop dashboard) and dot notation formats
-		const eventType = webhookData.type;
+		// Whop SDK uses dot notation (payment.succeeded), but dashboard may use snake_case
+		const eventType = webhookData.type as string;
 
-		if (eventType === "payment_succeeded" || eventType === "payment.succeeded") {
+		// Normalize event type to dot notation for comparison
+		const normalizedType = eventType.replace(/_/g, ".");
+
+		if (normalizedType === "payment.succeeded" || eventType === "payment_succeeded") {
 			// Use waitUntil for async processing without blocking response
 			waitUntil(handlePaymentSucceeded(webhookData.data));
-		} else if (eventType === "invoice_paid" || eventType === "invoice.paid") {
+		} else if (normalizedType === "invoice.paid" || eventType === "invoice_paid") {
 			waitUntil(handleInvoicePaid(webhookData.data));
-		} else if (eventType === "invoice_voided" || eventType === "invoice.voided") {
+		} else if (normalizedType === "invoice.voided" || eventType === "invoice_voided") {
 			waitUntil(handleInvoiceVoided(webhookData.data));
-		} else if (eventType === "membership_activated" || eventType === "membership.activated") {
+		} else if (normalizedType === "membership.activated" || eventType === "membership_activated") {
 			waitUntil(handleMembershipActivated(webhookData.data));
-		} else if (eventType === "membership_deactivated" || eventType === "membership.deactivated") {
+		} else if (normalizedType === "membership.deactivated" || eventType === "membership_deactivated") {
 			waitUntil(handleMembershipDeactivated(webhookData.data));
 		} else {
 			// Log unhandled events for monitoring
