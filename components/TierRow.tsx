@@ -171,21 +171,26 @@ export function TierRow({
 							className="p-2 hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center"
 							title="Settings - Click to change color"
 						>
-							{/* Solid gear icon - 8 teeth */}
+							{/* Solid gear icon - 8 teeth, matching TierMaker */}
 							<svg
 								width="20"
 								height="20"
 								viewBox="0 0 20 20"
-								fill="white"
+								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								{/* Classic 8-tooth gear */}
+								{/* 8-tooth gear outer ring */}
 								<path
-									d="M10 2L11.5 4.5L14.5 5.5L12 7.5L12.5 10.5L10 11L7.5 10.5L8 7.5L5.5 5.5L8.5 4.5L10 2ZM10 8.5L12 10L13 12.5L11.5 14.5L9 15L6.5 14.5L7 12.5L8 10L10 8.5Z"
+									d="M10 1L11.76 3.82L15 5L11.76 6.18L10 9L8.24 6.18L5 5L8.24 3.82L10 1Z"
 									fill="white"
 								/>
-								<circle cx="10" cy="10" r="3" fill="white"/>
-								<circle cx="10" cy="10" r="2" fill="black"/>
+								<path
+									d="M10 11L12.82 12.76L15 16L12.76 18.24L10 19L7.24 18.24L5 16L7.18 12.76L10 11Z"
+									fill="white"
+								/>
+								{/* Center hub */}
+								<circle cx="10" cy="10" r="3.5" fill="white"/>
+								<circle cx="10" cy="10" r="2.5" fill="black"/>
 							</svg>
 						</button>
 					</div>
@@ -204,14 +209,14 @@ export function TierRow({
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
 						>
-							{/* Up chevron */}
+							{/* Up chevron - small triangle */}
 							<path
-								d="M10 5L7 9L10 9L13 9L10 5Z"
+								d="M10 6L7.5 9H12.5L10 6Z"
 								fill="white"
 							/>
-							{/* Down chevron - small gap between them */}
+							{/* Down chevron - with gap */}
 							<path
-								d="M10 15L7 11L10 11L13 11L10 15Z"
+								d="M10 14L7.5 11H12.5L10 14Z"
 								fill="white"
 							/>
 						</svg>
