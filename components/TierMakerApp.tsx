@@ -27,8 +27,8 @@ export function TierMakerApp({
 
 	// Helper function for navigation
 	const navigateTo = (path: string) => {
-		if (iframeSdk?.navigate && typeof iframeSdk.navigate === "function") {
-			iframeSdk.navigate(path);
+		if (iframeSdk && typeof (iframeSdk as any).navigate === "function") {
+			(iframeSdk as any).navigate(path);
 		} else {
 			window.location.href = path;
 		}
