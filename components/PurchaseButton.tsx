@@ -103,16 +103,15 @@ export function PurchaseButton({
 					}, 1000);
 				}
 			} else {
-				// Handle other statuses (cancelled, error, etc.)
-				if (res.status === "cancelled") {
-					// User cancelled the purchase
+				// Purchase failed or cancelled
+				const errorMessage = (res as any).error?.message || "Purchase failed";
+				console.error("[PURCHASE ERROR]", res);
+				// Only throw error if it's not a cancellation (user-initiated)
+				if ((res as any).status !== "cancelled") {
+					throw new Error(errorMessage);
+				} else {
 					console.log("[PURCHASE CANCELLED] User cancelled purchase");
 					setError(null); // No error for cancellation
-				} else {
-					// Purchase failed
-					const errorMessage = (res as any).error?.message || "Purchase failed";
-					console.error("[PURCHASE ERROR]", res);
-					throw new Error(errorMessage);
 				}
 			}
 		} catch (error: any) {
