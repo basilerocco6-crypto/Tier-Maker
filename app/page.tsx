@@ -25,6 +25,13 @@ async function getUserRole(userId: string | null, companyId?: string): Promise<"
 		return "admin";
 	}
 
+	// Quick check: If user is the agent user (app developer), grant admin
+	const agentUserId = process.env.NEXT_PUBLIC_WHOP_AGENT_USER_ID;
+	if (agentUserId && userId === agentUserId) {
+		console.log("[GET USER ROLE] User is agent user, granting admin");
+		return "admin";
+	}
+
 	// Check if user is admin (Owner or Admin role in Whop company)
 	try {
 		// Get company ID from environment or parameter
@@ -38,7 +45,15 @@ async function getUserRole(userId: string | null, companyId?: string): Promise<"
 		// Method 1: Check if user is company owner (most reliable)
 		try {
 			const company = await whopsdk.companies.retrieve(whopCompanyId);
-			const ownerId = (company as any).owner_id || (company as any).owner?.id;
+			const ownerId = (company as any).owner_id || (company as any).owner?.id || (company as any).owner_id;
+			
+			console.log("[GET USER ROLE] Company owner check:", {
+				userId,
+				ownerId,
+				companyId: whopCompanyId,
+				match: ownerId === userId,
+			});
+			
 			if (ownerId === userId) {
 				console.log("[GET USER ROLE] User is company owner");
 				return "admin";
