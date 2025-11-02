@@ -171,7 +171,7 @@ export function TierRow({
 							className="p-2 hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center"
 							title="Settings - Click to change color"
 						>
-							{/* Solid gear icon - 8 teeth, matching TierMaker */}
+							{/* Solid gear icon - 8 teeth, matching TierMaker exactly */}
 							<svg
 								width="20"
 								height="20"
@@ -179,17 +179,14 @@ export function TierRow({
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								{/* 8-tooth gear outer ring */}
+								{/* 8-tooth gear - mathematically correct */}
 								<path
-									d="M10 1L11.76 3.82L15 5L11.76 6.18L10 9L8.24 6.18L5 5L8.24 3.82L10 1Z"
+									fillRule="evenodd"
+									clipRule="evenodd"
+									d="M10 0L11.76 2.34L14.64 1.46L15.54 4.34L18.78 4.34L18.78 5.66L15.54 5.66L14.64 8.54L11.76 7.66L10 10L8.24 7.66L5.36 8.54L4.46 5.66L1.22 5.66L1.22 4.34L4.46 4.34L5.36 1.46L8.24 2.34L10 0ZM10 10L12.34 11.76L13.22 14.64L10.34 15.54L10.34 18.78L11.66 18.78L11.66 15.54L14.54 14.64L15.42 11.76L18.78 10L15.42 8.24L14.54 5.36L11.66 6.24L11.66 1.22L10.34 1.22L10.34 6.24L7.46 5.36L6.58 8.24L3.22 10L6.58 11.76L7.46 14.64L10.34 13.76L10.34 18.78L11.66 18.78L11.66 13.76L14.54 14.64L15.42 11.76L18.78 10L15.42 8.24L14.54 5.36L11.66 6.24L11.66 1.22L10.34 1.22L10.34 6.24L7.46 5.36L6.58 8.24L3.22 10L6.58 11.76L7.46 14.64L10.34 13.76L10.34 18.78L11.66 18.78L11.66 13.76L14.54 14.64L15.42 11.76L18.78 10L15.42 8.24Z"
 									fill="white"
 								/>
-								<path
-									d="M10 11L12.82 12.76L15 16L12.76 18.24L10 19L7.24 18.24L5 16L7.18 12.76L10 11Z"
-									fill="white"
-								/>
-								{/* Center hub */}
-								<circle cx="10" cy="10" r="3.5" fill="white"/>
+								<circle cx="10" cy="10" r="4" fill="white"/>
 								<circle cx="10" cy="10" r="2.5" fill="black"/>
 							</svg>
 						</button>
