@@ -10,7 +10,7 @@ interface PurchaseButtonProps {
 	onPurchaseSuccess?: () => void;
 	onPurchaseError?: (error: string) => void;
 	className?: string;
-	variant?: "classic" | "outline" | "ghost";
+	variant?: "classic" | "ghost" | "solid" | "soft" | "surface";
 	size?: "1" | "2" | "3" | "4";
 	children?: React.ReactNode;
 }
