@@ -163,6 +163,7 @@ export default async function ExperiencePage({
 	try {
 		const experience = await whopsdk.experiences.retrieve(experienceId);
 		companyId = (experience as any).company_id || process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+		console.log("[EXPERIENCE PAGE] Company ID from experience:", companyId);
 	} catch (error: any) {
 		console.error("[EXPERIENCE PAGE] Failed to get experience:", error);
 		companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
@@ -170,6 +171,7 @@ export default async function ExperiencePage({
 
 	// Fetch tier list data and user role
 	const userRole = await getUserRole(userId, companyId);
+	console.log("[EXPERIENCE PAGE] Final user role:", userRole, "for userId:", userId);
 	const tierLists = await getTierLists(userId, userRole);
 
 	// Render the actual Tier List application
