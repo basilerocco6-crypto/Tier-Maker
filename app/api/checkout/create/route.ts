@@ -35,10 +35,11 @@ export async function POST(request: Request) {
 		}
 
 		// Create checkout configuration using Whop SDK
+		// Note: Using camelCase for parameters as per Whop SDK TypeScript types
 		const checkoutConfig = await whopsdk.checkoutConfigurations.create({
-			company_id: companyId,
-			initial_price: price, // Price in cents
-			plan_type: "one_time", // or "recurring" for subscriptions
+			companyId: companyId,
+			initialPrice: price, // Price in cents
+			planType: "one_time", // or "recurring" for subscriptions
 			metadata: {
 				templateId: templateId,
 				template_id: templateId,
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
 				item_id: templateId, // For identification
 				variant: "tier_list_access", // Product variant
 			},
-		});
+		} as any); // Using 'as any' temporarily until SDK types are updated
 
 		console.log("[CHECKOUT CREATE] Configuration created:", {
 			checkoutConfigId: checkoutConfig.id,
