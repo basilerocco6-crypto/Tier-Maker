@@ -171,19 +171,26 @@ export function TierRow({
 							className="p-2 hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center"
 							title="Settings - Click to change color"
 						>
-							{/* Solid gear icon with sharp teeth */}
+							{/* Solid gear icon with 8 teeth */}
 							<svg
-								width="18"
-								height="18"
-								viewBox="0 0 18 18"
+								width="20"
+								height="20"
+								viewBox="0 0 20 20"
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 							>
+								{/* 8-tooth gear shape */}
 								<path
-									d="M9 2L10.09 3.91L12.36 4.64L11.55 6.91L13.36 8.72L11.55 10.53L12.36 12.8L10.09 13.53L9 15.44L7.91 13.53L5.64 12.8L6.45 10.53L4.64 8.72L6.45 6.91L5.64 4.64L7.91 3.91L9 2Z"
+									d="M10 1L11.18 4.32L14.5 5.5L11.18 6.68L10 10L8.82 6.68L5.5 5.5L8.82 4.32L10 1Z"
 									fill="white"
 								/>
-								<circle cx="9" cy="9" r="3" fill="black"/>
+								<path
+									d="M10 10L12.32 11.18L13.5 14.5L12.32 17.82L10 19L7.68 17.82L6.5 14.5L7.68 11.18L10 10Z"
+									fill="white"
+								/>
+								{/* Center hole */}
+								<circle cx="10" cy="10" r="3" fill="white"/>
+								<circle cx="10" cy="10" r="2" fill="black"/>
 							</svg>
 						</button>
 					</div>
@@ -196,20 +203,20 @@ export function TierRow({
 						title="Reorder"
 					>
 						<svg
-							width="18"
-							height="18"
-							viewBox="0 0 18 18"
+							width="20"
+							height="20"
+							viewBox="0 0 20 20"
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
 						>
-							{/* Up triangle */}
+							{/* Up chevron */}
 							<path
-								d="M9 4L5 8H13L9 4Z"
+								d="M10 5L7 9L10 9L13 9L10 5Z"
 								fill="white"
 							/>
-							{/* Down triangle */}
+							{/* Down chevron - small gap between them */}
 							<path
-								d="M9 14L5 10H13L9 14Z"
+								d="M10 15L7 11L10 11L13 11L10 15Z"
 								fill="white"
 							/>
 						</svg>
