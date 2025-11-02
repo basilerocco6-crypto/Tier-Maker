@@ -179,17 +179,15 @@ export function TierRow({
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								{/* 8-tooth gear - calculated positions for triangular teeth */}
+								{/* 8-tooth gear - proper triangular teeth from center */}
 								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M10 1L11.41 3.59L14.14 4.14L12.59 5.59L13.14 8.32L10 7.5L6.86 8.32L7.41 5.59L5.86 4.14L8.59 3.59L10 1ZM10 11.68L13.14 12.5L12.59 15.23L14.14 16.68L11.41 17.23L10 19L8.59 17.23L5.86 16.68L7.41 15.23L6.86 12.5L10 11.68Z"
+									d="M10 1.5 L11.9 4.1 L14.9 4.9 L13.1 7.1 L13.9 10.1 L10 9.5 L6.1 10.1 L6.9 7.1 L5.1 4.9 L8.1 4.1 L10 1.5 Z M10 10.5 L13.9 11.1 L13.1 14.1 L14.9 16.3 L11.9 17.1 L10 19.7 L8.1 17.1 L5.1 16.3 L6.9 14.1 L6.1 11.1 L10 10.5 Z"
 									fill="white"
 								/>
-								{/* Center white gear body circle */}
-								<circle cx="10" cy="10" r="5.2" fill="white"/>
+								{/* Center white body - fills gap between teeth and hole */}
+								<circle cx="10" cy="10" r="5" fill="white"/>
 								{/* Center black hole */}
-								<circle cx="10" cy="10" r="2.3" fill="black"/>
+								<circle cx="10" cy="10" r="2.5" fill="black"/>
 							</svg>
 						</button>
 					</div>
