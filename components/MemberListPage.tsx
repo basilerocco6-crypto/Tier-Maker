@@ -122,15 +122,22 @@ export function MemberListPage({
 				</div>
 
 				{/* TierListBoard */}
-				<div className="mb-6">
-					<TierListBoard
-						tierRows={template.tierRows}
-						items={template.itemBank}
-						placement={placement}
-						isEditable={true}
-						onItemMove={handleItemMove}
-					/>
-				</div>
+                <div className="mb-6">
+                    <TierListBoard
+                        tierRows={template.tierRows}
+                        items={template.itemBank}
+                        placement={placement}
+                        isEditable={true}
+                        onItemMove={handleItemMove}
+                        onItemRemove={(itemId) =>
+                            setPlacement((prev) => {
+                                const next = { ...prev };
+                                delete next[itemId];
+                                return next;
+                            })
+                        }
+                    />
+                </div>
 
 				{/* ItemBank */}
 				<ItemBank

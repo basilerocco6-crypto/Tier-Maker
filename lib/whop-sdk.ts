@@ -18,7 +18,7 @@ function getWhopSdk(): Whop {
 			appID,
 			apiKey,
 			webhookKey: btoa(webhookSecret),
-		});
+});
 	}
 	return _whopsdk;
 }
