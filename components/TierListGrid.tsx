@@ -10,7 +10,12 @@ interface TierListGridProps {
 }
 
 export function TierListGrid({ tierLists, userId }: TierListGridProps) {
-	const iframeSdk = useIframeSdk();
+	let iframeSdk = null;
+	try {
+		iframeSdk = useIframeSdk();
+	} catch (error) {
+		console.warn("[TierListGrid] Error getting iframe SDK:", error);
+	}
 
 	const handleDelete = () => {
 		// Refresh the page after deletion

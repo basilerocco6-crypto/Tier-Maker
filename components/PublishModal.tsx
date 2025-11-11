@@ -4,16 +4,17 @@ import { useState } from "react";
 import { Button } from "@whop/react/components";
 
 interface PublishModalProps {
-	onClose: () => void;
-	onPublish: (data: {
-		status: "published" | "open_for_submission";
-		accessType: "free";
-	}) => void;
-	isSaving: boolean;
+    onClose: () => void;
+    onPublish: (data: {
+        status: "published" | "open_for_submission";
+        accessType: "free";
+    }) => void;
+    isSaving: boolean;
 }
 
 export function PublishModal({ onClose, onPublish, isSaving }: PublishModalProps) {
-	const [status, setStatus] = useState<"published" | "open_for_submission">("published");
+    // Always publish; no alternative modes exposed in UI
+    const [status] = useState<"published" | "open_for_submission">("published");
 
 	const handleConfirm = () => {
 		onPublish({
@@ -36,44 +37,12 @@ export function PublishModal({ onClose, onPublish, isSaving }: PublishModalProps
 					<h2 className="text-7 font-bold text-gray-12">Publish Tier List</h2>
 				</div>
 				<div className="space-y-6">
-					{/* Status Selection */}
-					<div>
-						<label className="text-4 font-semibold text-gray-12 mb-2 block">
-							Publication Type
-						</label>
-						<div className="space-y-2">
-							<label className="flex items-center gap-2 cursor-pointer">
-								<input
-									type="radio"
-									name="status"
-									value="published"
-									checked={status === "published"}
-									onChange={(e) =>
-										setStatus(e.target.value as "published" | "open_for_submission")
-									}
-									className="w-4 h-4"
-								/>
-								<span className="text-3 text-gray-10">
-									Publish as Locked (View-Only)
-								</span>
-							</label>
-							<label className="flex items-center gap-2 cursor-pointer">
-								<input
-									type="radio"
-									name="status"
-									value="open_for_submission"
-									checked={status === "open_for_submission"}
-									onChange={(e) =>
-										setStatus(e.target.value as "published" | "open_for_submission")
-									}
-									className="w-4 h-4"
-								/>
-								<span className="text-3 text-gray-10">
-									Open for Community Submissions
-								</span>
-							</label>
-						</div>
-					</div>
+                    {/* Simplified copy: no options, always publish */}
+                    <div>
+                        <p className="text-3 text-gray-11">
+                            Publish this tier list so it’s visible to everyone in your community.
+                        </p>
+                    </div>
 
 					{/* Buttons */}
 					<div className="flex gap-2 justify-end pt-4">

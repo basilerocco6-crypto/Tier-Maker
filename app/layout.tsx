@@ -1,6 +1,7 @@
 import { WhopApp } from "@whop/react/components";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ErrorBoundaryWrapper } from "@/components/ErrorBoundaryWrapper";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,9 +29,11 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<WhopApp accentColor="blue" appearance="inherit">
-					{children}
-				</WhopApp>
+				<ErrorBoundaryWrapper>
+					<WhopApp accentColor="blue" appearance="inherit">
+						{children}
+					</WhopApp>
+				</ErrorBoundaryWrapper>
 			</body>
 		</html>
 	);

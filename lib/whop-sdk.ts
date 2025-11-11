@@ -14,11 +14,20 @@ function getWhopSdk(): Whop {
 
 		// Create SDK instance - placeholders allow build to succeed
 		// Real values from Vercel env vars will be used at runtime
-		_whopsdk = new Whop({
-			appID,
-			apiKey,
-			webhookKey: btoa(webhookSecret),
-});
+        const toBase64 = (value: string): string => {
+            // Use browser btoa when available; fallback to Node Buffer on server
+            try {
+                // @ts-ignore - btoa may not exist on Node
+                if (typeof btoa === "function") return btoa(value);
+            } catch {}
+            return Buffer.from(value, "utf8").toString("base64");
+        };
+
+        _whopsdk = new Whop({
+            appID,
+            apiKey,
+            webhookKey: toBase64(webhookSecret),
+        });
 	}
 	return _whopsdk;
 }

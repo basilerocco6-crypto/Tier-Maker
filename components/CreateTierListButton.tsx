@@ -4,7 +4,12 @@ import { Button } from "@whop/react/components";
 import { useIframeSdk } from "@whop/react";
 
 export function CreateTierListButton() {
-	const iframeSdk = useIframeSdk();
+	let iframeSdk = null;
+	try {
+		iframeSdk = useIframeSdk();
+	} catch (error) {
+		console.warn("[CreateTierListButton] Error getting iframe SDK:", error);
+	}
 
 	const navigateTo = (path: string) => {
 		if (iframeSdk && typeof (iframeSdk as any).navigate === "function") {

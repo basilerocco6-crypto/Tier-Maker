@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS tier_list_templates (
   tier_rows JSONB NOT NULL DEFAULT '[]'::jsonb,
   item_bank JSONB NOT NULL DEFAULT '[]'::jsonb,
   admin_placement JSONB DEFAULT '{}'::jsonb,
+  created_by TEXT, -- Whop user ID of the creator
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

@@ -41,16 +41,21 @@ function DraggableItem({ item, isEditable, onRemove }: { item: TierListItem; isE
 		);
 	}
 
-	return (
-		<div ref={setNodeRef} style={style} {...listeners} {...attributes} className="relative group">
-			<img
-				src={item.imageUrl}
-				alt="Tier item"
-				className="w-16 h-16 object-cover rounded cursor-pointer hover:scale-110 transition-transform"
-			/>
+    return (
+        <div ref={setNodeRef} style={style} className="relative group">
+            <img
+                src={item.imageUrl}
+                alt="Tier item"
+                className="w-16 h-16 object-cover rounded cursor-pointer hover:scale-110 transition-transform"
+                {...listeners}
+                {...attributes}
+            />
 			{isEditable && onRemove && (
 				<button
-					onClick={(e) => {
+                    type="button"
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
 						e.stopPropagation();
 						onRemove();
 					}}
