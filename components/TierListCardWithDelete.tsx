@@ -35,18 +35,6 @@ export function TierListCardWithDelete({
 		String(userId).trim() === String(template.createdBy).trim()
 	);
 
-	// Debug logging - always log to help diagnose
-	console.log("[TierListCardWithDelete] Debug:", {
-		userId,
-		createdBy: template.createdBy,
-		isOwner,
-		templateId: template.id,
-		templateTitle: template.title,
-		comparison: userId === template.createdBy,
-		userIdType: typeof userId,
-		createdByType: typeof template.createdBy,
-	});
-
 	const handleDelete = async () => {
 		setIsDeleting(true);
 		try {
@@ -101,10 +89,6 @@ export function TierListCardWithDelete({
 	return (
 		<>
 			<div className="bg-gray-a2 border border-gray-a4 rounded-lg p-6 hover:border-gray-a6 transition-colors relative group">
-				{/* Debug info - show always for now to diagnose */}
-				<div className="absolute top-2 left-2 text-xs bg-yellow-500 text-black p-1 rounded z-20">
-					Owner: {isOwner ? "Yes" : "No"} | User: {userId?.substring(0, 8) || "null"} | CreatedBy: {template.createdBy?.substring(0, 8) || "null"}
-				</div>
 				{/* Delete button - only show if user is the owner */}
 				{isOwner && (
 					<button
