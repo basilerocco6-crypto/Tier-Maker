@@ -1,32 +1,20 @@
-import { headers } from "next/headers";
 import { ExternalLinkButton } from "@/components/ExternalLinkButton";
-import { whopsdk } from "@/lib/whop-sdk";
 
 export default async function DashboardPage({
 	params,
 }: {
 	params: Promise<{ companyId: string }>;
 }) {
-	const { companyId } = await params;
-	// Ensure the user is logged in on whop.
-	const { userId } = await whopsdk.verifyUserToken(await headers());
-
-	// Fetch the neccessary data we want from whop.
-	const [company, user, access] = await Promise.all([
-		whopsdk.companies.retrieve(companyId),
-		whopsdk.users.retrieve(userId),
-		whopsdk.users.checkAccess(companyId, { id: userId }),
-	]);
-
-	const displayName = user.name || `@${user.username}`;
+    await params; // route exists but we don't fetch Whop data anymore
+    const displayName = "there";
 
 	return (
-		<div className="flex flex-col p-8 gap-4">
-			<div className="flex justify-between items-center gap-4">
-				<h1 className="text-9">
+		<div className="flex flex-col p-4 sm:p-6 md:p-8 gap-4">
+			<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+				<h1 className="text-7 sm:text-8 md:text-9">
 					Hi <strong>{displayName}</strong>!
 				</h1>
-				<ExternalLinkButton href="https://docs.whop.com/apps" variant="classic" className="w-full" size="3">
+				<ExternalLinkButton href="https://docs.whop.com/apps" variant="classic" className="w-full sm:w-auto" size="3">
 					Developer Docs
 				</ExternalLinkButton>
 			</div>
@@ -36,14 +24,8 @@ export default async function DashboardPage({
 				get you started, here's some helpful data you can fetch from whop.
 			</p>
 
-			<h3 className="text-6 font-bold">Company data</h3>
-			<JsonViewer data={company} />
-
-			<h3 className="text-6 font-bold">User data</h3>
-			<JsonViewer data={user} />
-
-			<h3 className="text-6 font-bold">Access data</h3>
-			<JsonViewer data={access} />
+            <h3 className="text-5 sm:text-6 font-bold">Demo</h3>
+            <p className="text-3 text-gray-10">This page no longer pulls data from Whop.</p>
 		</div>
 	);
 }

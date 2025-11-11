@@ -64,10 +64,10 @@ export function ItemBank({
 				isOver ? "border-blue-6 bg-blue-1" : "border-gray-a4 bg-gray-a1"
 			}`}
 		>
-			<div className="flex items-center justify-between mb-4">
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
 				<h3 className="text-4 font-semibold text-gray-12">Item Bank</h3>
 				{isEditable && (
-					<Button variant="ghost" size="3" onClick={onUploadClick}>
+					<Button variant="ghost" size="3" onClick={onUploadClick} className="w-full sm:w-auto">
 						Upload Items
 					</Button>
 				)}

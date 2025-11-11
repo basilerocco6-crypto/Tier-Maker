@@ -48,7 +48,8 @@ export function MemberListPage({
 	};
 
 	const handleReset = () => {
-		setPlacement(template.adminPlacement || {});
+		// Reset to empty placement (clear all user placements)
+		setPlacement({});
 		setSaved(false);
 	};
 
@@ -90,9 +91,9 @@ export function MemberListPage({
 	// State A: Locked, Published List (View-Only)
 	if (template.status === "published" && !template.adminPlacement) {
 		return (
-			<div className="min-h-screen p-8 bg-gray-a1">
+			<div className="min-h-screen p-4 sm:p-6 md:p-8 bg-gray-a1">
 				<div className="max-w-7xl mx-auto">
-					<h1 className="text-9 font-bold text-gray-12 mb-4">{template.title}</h1>
+					<h1 className="text-7 sm:text-8 md:text-9 font-bold text-gray-12 mb-4">{template.title}</h1>
 					<p className="text-3 text-gray-10">This list is view-only</p>
 				</div>
 			</div>
@@ -101,12 +102,34 @@ export function MemberListPage({
 
 	// All tier lists are now free - no paid gating
 	return (
-		<div className="min-h-screen p-8 bg-gray-a1">
+		<div className="min-h-screen p-4 sm:p-6 md:p-8 bg-gray-a1">
 			<div className="max-w-7xl mx-auto">
 				{/* Fixed Header */}
-				<div className="flex justify-between items-center mb-6">
-					<h1 className="text-9 font-bold text-gray-12">{template.title}</h1>
-					<div className="flex gap-2">
+				<div className="flex flex-col gap-4 mb-6">
+					{/* Top row: Back button and title */}
+					<div className="flex items-center gap-2 sm:gap-3">
+						<Button
+							variant="ghost"
+							size="3"
+							onClick={() => {
+								if (iframeSdk && typeof (iframeSdk as any).navigate === "function") {
+									(iframeSdk as any).navigate("/");
+								} else {
+									window.location.href = "/";
+								}
+							}}
+							className="flex-shrink-0"
+						>
+							{/* Left arrow icon */}
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:mr-2">
+								<path d="M9.5 3.5L5 8l4.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+							</svg>
+							<span className="hidden sm:inline">Back to Dashboard</span>
+						</Button>
+						<h1 className="text-6 sm:text-7 md:text-9 font-bold text-gray-12 truncate">{template.title}</h1>
+					</div>
+					{/* Action buttons row */}
+					<div className="flex flex-wrap gap-2">
 						<Button variant="ghost" size="3" onClick={handleReset}>
 							Reset
 						</Button>

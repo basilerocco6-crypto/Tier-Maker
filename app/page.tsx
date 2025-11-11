@@ -1,6 +1,7 @@
-import { getUserId } from "@/lib/auth-helper";
 import { supabaseAdmin } from "@/lib/supabase";
 import { CreateTierListButton } from "@/components/CreateTierListButton";
+import { TierListGrid } from "@/components/TierListGrid";
+import { getUserId } from "@/lib/auth-helper";
 import type { TierListTemplate } from "@/lib/types";
 
 async function getTierLists(userId: string | null) {
@@ -16,78 +17,62 @@ async function getTierLists(userId: string | null) {
 		return [];
 	}
 
-	return data as TierListTemplate[];
+	// Normalize snake_case from DB to camelCase
+	return (data || []).map((item: any) => {
+		const normalized = {
+			...item,
+			tierRows: item.tier_rows || [],
+			itemBank: item.item_bank || [],
+			adminPlacement: item.admin_placement || {},
+			createdBy: item.created_by || item.createdBy || null,
+			createdAt: item.created_at || item.createdAt,
+			updatedAt: item.updated_at || item.updatedAt,
+			accessType: item.access_type || item.accessType || "free",
+		};
+		// Debug: Log in development to help diagnose
+		if (process.env.NODE_ENV === "development") {
+			console.log("[getTierLists] Normalized:", {
+				id: normalized.id,
+				title: normalized.title,
+				createdBy: normalized.createdBy,
+				created_by: item.created_by,
+				userId,
+			});
+		}
+		return normalized;
+	}) as TierListTemplate[];
 }
 
 export default async function DashboardPage() {
-	try {
-		const userId = await getUserId();
-		console.log("[DASHBOARD PAGE] Authenticated userId:", userId);
-		
-		const tierLists = await getTierLists(userId);
+    try {
+        // Get userId for ownership checks
+        const userId = await getUserId().catch(() => null);
+        
+        // Fetch all published tier lists
+        const tierLists = await getTierLists(userId);
 
 		// Everyone uses the member interface - no admin/member distinction
 		return (
-			<div className="min-h-screen p-8 bg-gray-a1">
+			<div className="min-h-screen p-4 sm:p-6 md:p-8 bg-gray-a1">
 				<div className="max-w-7xl mx-auto">
-					<div className="flex justify-between items-center mb-8">
-						<h1 className="text-9 font-bold text-gray-12">Tier Lists</h1>
+					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
+						<h1 className="text-7 sm:text-8 md:text-9 font-bold text-gray-12">Tier Lists</h1>
 						<CreateTierListButton />
 					</div>
 					
-					{tierLists.length === 0 ? (
-						<div className="text-center py-16">
-							<p className="text-4 text-gray-10 mb-4">
-								No tier lists yet. Create your first one!
-							</p>
-						</div>
-					) : (
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-							{tierLists.map((template) => (
-								<div key={template.id} className="bg-gray-a2 border border-gray-a4 rounded-lg p-6 hover:border-gray-a6 transition-colors cursor-pointer" onClick={() => {
-									window.location.href = `/list/${template.id}`;
-								}}>
-									<h2 className="text-7 font-bold text-gray-12 mb-2">{template.title}</h2>
-									<p className="text-3 text-gray-10 mb-4">
-										{template.status === "published" ? "Published" : "Draft"}
-									</p>
-									<p className="text-2 text-gray-9">
-										Click to view and create your tier list
-									</p>
-								</div>
-							))}
-						</div>
-					)}
+					<TierListGrid tierLists={tierLists} userId={userId} />
 				</div>
 			</div>
 		);
-	} catch (error: any) {
-		// Handle authentication errors gracefully
-		console.error("[DASHBOARD PAGE] Error:", error);
-		
-		// If accessing directly (not through Whop iframe), show a helpful message
-		return (
-			<div className="min-h-screen flex items-center justify-center p-8 bg-gray-a1">
-				<div className="max-w-md w-full bg-gray-a2 border border-gray-a4 rounded-lg p-8 text-center">
-					<h1 className="text-9 font-bold text-gray-12 mb-4">
-						Authentication Required
-					</h1>
-					<p className="text-4 text-gray-10 mb-4">
-						This app must be accessed through the Whop platform.
-					</p>
-					<p className="text-3 text-gray-9 mb-2">
-						To use this app:
-					</p>
-					<ul className="text-2 text-gray-9 text-left space-y-2 mb-6">
-						<li>• Access it through your Whop experience</li>
-						<li>• Ensure you're logged in to Whop</li>
-						<li>• Use the Whop app iframe</li>
-					</ul>
-					<p className="text-2 text-gray-8">
-						If you're the app developer, make sure your app is properly configured in the Whop dashboard.
-					</p>
-				</div>
-			</div>
-		);
-	}
+    } catch (error: any) {
+        console.error("[DASHBOARD PAGE] Error:", error);
+        return (
+            <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-8 bg-gray-a1">
+                <div className="max-w-md w-full bg-gray-a2 border border-gray-a4 rounded-lg p-6 sm:p-8 text-center">
+                    <h1 className="text-7 sm:text-8 md:text-9 font-bold text-gray-12 mb-4">Something went wrong</h1>
+                    <p className="text-3 sm:text-4 text-gray-10">Please try again in a moment.</p>
+                </div>
+            </div>
+        );
+    }
 }

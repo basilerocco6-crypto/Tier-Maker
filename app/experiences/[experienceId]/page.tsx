@@ -1,7 +1,7 @@
-import { headers } from "next/headers";
-import { whopsdk } from "@/lib/whop-sdk";
 import { supabaseAdmin } from "@/lib/supabase";
 import { CreateTierListButton } from "@/components/CreateTierListButton";
+import { TierListGrid } from "@/components/TierListGrid";
+import { getUserId } from "@/lib/auth-helper";
 import type { TierListTemplate } from "@/lib/types";
 
 async function getTierLists(userId: string | null) {
@@ -17,113 +17,56 @@ async function getTierLists(userId: string | null) {
 		return [];
 	}
 
-	return data as TierListTemplate[];
+	// Normalize snake_case from DB to camelCase
+	return (data || []).map((item: any) => {
+		const normalized = {
+			...item,
+			tierRows: item.tier_rows || [],
+			itemBank: item.item_bank || [],
+			adminPlacement: item.admin_placement || {},
+			createdBy: item.created_by || item.createdBy || null,
+			createdAt: item.created_at || item.createdAt,
+			updatedAt: item.updated_at || item.updatedAt,
+			accessType: item.access_type || item.accessType || "free",
+		};
+		// Debug: Log in development to help diagnose
+		if (process.env.NODE_ENV === "development") {
+			console.log("[getTierLists] Normalized:", {
+				id: normalized.id,
+				title: normalized.title,
+				createdBy: normalized.createdBy,
+				created_by: item.created_by,
+				userId,
+			});
+		}
+		return normalized;
+	}) as TierListTemplate[];
 }
 
 export default async function ExperiencePage({
-	params,
+    params,
 }: {
-	params: Promise<{ experienceId: string }>;
+    params: Promise<{ experienceId: string }>;
 }) {
-	// Handle experienceId from params (Promise in Next.js 15)
-	const { experienceId } = await params;
+    // We ignore access distinctions; everyone can see published lists
+    await params; // ensure param promise resolves (unused)
 
-	// 1. Implement authentication
-	// Use await whopsdk.verifyUserToken(await headers()) to get userId
-	// Wrap in try-catch to handle missing token gracefully
-	let userId: string;
-	try {
-		const result = await whopsdk.verifyUserToken(await headers());
-		userId = result.userId;
-		console.log("[EXPERIENCE PAGE] Authenticated userId:", userId);
-		console.log("[EXPERIENCE PAGE] Agent userId from env:", process.env.NEXT_PUBLIC_WHOP_AGENT_USER_ID);
-	} catch (error: any) {
-		// If token is missing, show a helpful error message
-	return (
-			<div className="min-h-screen flex items-center justify-center p-8 bg-gray-a1">
-				<div className="max-w-md w-full bg-gray-a2 border border-gray-a4 rounded-lg p-8 text-center">
-					<h1 className="text-9 font-bold text-gray-12 mb-4">
-						Authentication Required
-				</h1>
-					<p className="text-4 text-gray-10 mb-4">
-						Whop user token not found.
-					</p>
-					<p className="text-3 text-gray-9 mb-2">
-						To fix this:
-					</p>
-					<ul className="text-2 text-gray-9 text-left space-y-2 mb-6">
-						<li>• Ensure you're accessing this through the Whop iframe</li>
-						<li>• Enable the dev proxy in your Whop app settings</li>
-						<li>• Make sure your app is running with <code className="bg-gray-a3 px-1 rounded">pnpm dev</code></li>
-						<li>• Check that your environment variables are set correctly</li>
-					</ul>
-					<p className="text-2 text-gray-8">
-						If you're the app developer, see the Whop documentation for setting up local development.
-					</p>
-				</div>
-			</div>
-		);
-	}
+    // Get userId for ownership checks
+    const userId = await getUserId().catch(() => null);
 
-	// Use await whopsdk.users.checkAccess(experienceId, { id: userId }) to verify access
-	const access = await whopsdk.users.checkAccess(experienceId, { id: userId });
-
-	// Check if access.has_access is true
-	// Note: The SDK uses snake_case, so it's `has_access` not `hasAccess`
-	if (!access.has_access) {
-		// If no access, return an access denied message
-		return (
-			<div className="min-h-screen flex items-center justify-center p-8 bg-gray-a1">
-				<div className="max-w-md w-full bg-gray-a2 border border-gray-a4 rounded-lg p-8 text-center">
-					<h1 className="text-9 font-bold text-gray-12 mb-4">
-						Access Denied
-					</h1>
-					<p className="text-4 text-gray-10 mb-6">
-						You don't have access to this experience.
-					</p>
-					<p className="text-2 text-gray-9">
-						Please contact the experience owner for access.
-					</p>
-				</div>
-		</div>
-	);
-}
-
-	// Fetch tier list data - everyone uses the same member interface
-	const tierLists = await getTierLists(userId);
+    // Fetch tier list data - everyone uses the same member interface
+    const tierLists = await getTierLists(userId);
 
 	// Everyone uses the member interface - no admin/member distinction
 	return (
-		<div className="min-h-screen p-8 bg-gray-a1">
+		<div className="min-h-screen p-4 sm:p-6 md:p-8 bg-gray-a1">
 			<div className="max-w-7xl mx-auto">
-				<div className="flex justify-between items-center mb-8">
-					<h1 className="text-9 font-bold text-gray-12">Tier Lists</h1>
+				<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
+					<h1 className="text-7 sm:text-8 md:text-9 font-bold text-gray-12">Tier Lists</h1>
 					<CreateTierListButton />
 				</div>
 				
-				{tierLists.length === 0 ? (
-					<div className="text-center py-16">
-						<p className="text-4 text-gray-10 mb-4">
-							No tier lists yet. Create your first one!
-						</p>
-					</div>
-				) : (
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-						{tierLists.map((template) => (
-							<div key={template.id} className="bg-gray-a2 border border-gray-a4 rounded-lg p-6 hover:border-gray-a6 transition-colors cursor-pointer" onClick={() => {
-								window.location.href = `/list/${template.id}`;
-							}}>
-								<h2 className="text-7 font-bold text-gray-12 mb-2">{template.title}</h2>
-								<p className="text-3 text-gray-10 mb-4">
-									{template.status === "published" ? "Published" : "Draft"}
-								</p>
-								<p className="text-2 text-gray-9">
-									Click to view and create your tier list
-								</p>
-							</div>
-						))}
-					</div>
-				)}
+				<TierListGrid tierLists={tierLists} userId={userId} />
 			</div>
 		</div>
 	);

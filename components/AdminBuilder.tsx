@@ -200,14 +200,22 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 					navigateTo("/");
 				}, 1500);
 			} else {
-				throw new Error("Failed to publish");
+				const errorData = await response.json().catch(() => ({}));
+				console.error("Publish failed:", {
+					status: response.status,
+					statusText: response.statusText,
+					error: errorData,
+				});
+				const errorMessage = errorData.error || errorData.message || `Failed to publish: ${response.statusText || response.status}`;
+				throw new Error(errorMessage);
 			}
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Error publishing:", error);
+			const errorMessage = error?.message || "Failed to publish. Please try again.";
 			setNotification({
 				isOpen: true,
 				type: "error",
-				message: "Failed to publish. Please try again.",
+				message: errorMessage,
 			});
 		} finally {
 			setIsSaving(false);
@@ -314,23 +322,23 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 	const unplacedItems = itemBank.filter((item) => !placement[item.id]);
 
 	return (
-		<div className="min-h-screen p-8 bg-gray-a2">
+		<div className="min-h-screen p-4 sm:p-6 md:p-8 bg-gray-a2">
 			<div className="max-w-7xl mx-auto">
 				{/* Fixed Header */}
-				<div className="mb-6 flex items-center justify-between gap-4">
-					<div className="flex items-center gap-4 flex-1">
+				<div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+					<div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
 						<Button
 							variant="ghost"
 							size="3"
 							onClick={() => navigateTo("/")}
-							className="flex items-center gap-2"
+							className="flex items-center gap-2 flex-shrink-0"
 						>
 							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
 							</svg>
-							Back to Dashboard
+							<span className="hidden sm:inline">Back to Dashboard</span>
 						</Button>
-						<div className="flex-1">
+						<div className="flex-1 min-w-0">
 							{isEditingTitle ? (
 								<input
 									value={title}
@@ -341,12 +349,12 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 											setIsEditingTitle(false);
 										}
 									}}
-									className="text-9 font-bold h-9 px-3 py-1 rounded-md border border-gray-a4 bg-gray-a1 text-gray-12 focus:outline-none focus:ring-2 focus:ring-blue-6 focus:border-blue-6"
+									className="text-6 sm:text-7 md:text-9 font-bold h-9 px-3 py-1 rounded-md border border-gray-a4 bg-gray-a1 text-gray-12 focus:outline-none focus:ring-2 focus:ring-blue-6 focus:border-blue-6 w-full"
 									autoFocus
 								/>
 							) : (
 								<h1
-									className="text-9 font-bold text-gray-12 cursor-pointer hover:text-gray-10 transition-colors"
+									className="text-6 sm:text-7 md:text-9 font-bold text-gray-12 cursor-pointer hover:text-gray-10 transition-colors truncate"
 									onClick={() => setIsEditingTitle(true)}
 								>
 									{title}
@@ -354,7 +362,7 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 							)}
 						</div>
 					</div>
-					<div className="flex gap-2">
+					<div className="flex gap-2 flex-wrap">
 						<Button
 							variant="ghost"
 							size="3"
@@ -405,7 +413,7 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 						<p className="text-3 text-gray-10 mb-4">
 							Upload images to be used in your tier list. Images are not saved to the website, but will be included in your download.
 						</p>
-						<div className="flex items-center gap-4">
+						<div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
 							<input
 								type="file"
 								accept="image/*"
@@ -424,7 +432,7 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 									Choose file
 								</Button>
 							</label>
-							<span className="text-3 text-gray-9">
+							<span className="text-3 text-gray-9 break-words">
 								{selectedFileName || "No file selected"}
 							</span>
 						</div>
@@ -454,11 +462,11 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 				</DndContext>
 
 				{/* Action Buttons */}
-				<div className="flex items-center justify-center gap-4 mb-4">
+				<div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 mb-4">
 					<select
 						value={imageShape}
 						onChange={(e) => setImageShape(e.target.value as "square" | "circle")}
-						className="px-4 py-2 rounded-md border border-gray-a4 bg-gray-a1 text-gray-12 focus:outline-none focus:ring-2 focus:ring-blue-6"
+						className="px-4 py-2 rounded-md border border-gray-a4 bg-gray-a1 text-gray-12 focus:outline-none focus:ring-2 focus:ring-blue-6 w-full sm:w-auto"
 					>
 						<option value="square">Square Images</option>
 						<option value="circle">Circle Images</option>
@@ -467,6 +475,7 @@ export function AdminBuilder({ template, listId, userId }: AdminBuilderProps) {
 						variant="classic"
 						size="4"
 						onClick={handleDownload}
+						className="w-full sm:w-auto"
 					>
 						Download
 					</Button>
