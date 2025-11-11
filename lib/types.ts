@@ -23,6 +23,7 @@ export interface TierListTemplate {
 	tierRows: TierRow[];
 	itemBank: TierListItem[];
 	adminPlacement?: Record<string, string>; // { itemId: tierId }
+	createdBy?: string; // User ID of the creator
 	createdAt?: string;
 	updatedAt?: string;
 }
