@@ -11,6 +11,7 @@ interface ConfirmModalProps {
 	onConfirm: () => void;
 	onCancel: () => void;
 	variant?: "danger" | "default";
+	isLoading?: boolean;
 }
 
 export function ConfirmModal({
@@ -22,6 +23,7 @@ export function ConfirmModal({
 	onConfirm,
 	onCancel,
 	variant = "default",
+	isLoading = false,
 }: ConfirmModalProps) {
 	if (!isOpen) return null;
 
@@ -36,7 +38,12 @@ export function ConfirmModal({
 				)}
 				<p className="text-3 text-gray-11 mb-6">{message}</p>
 				<div className="flex gap-3 justify-end">
-					<Button variant="ghost" size="3" onClick={onCancel}>
+					<Button 
+						variant="ghost" 
+						size="3" 
+						onClick={onCancel}
+						disabled={isLoading}
+					>
 						{cancelText}
 					</Button>
 					<Button
@@ -44,8 +51,9 @@ export function ConfirmModal({
 						size="3"
 						onClick={onConfirm}
 						color={confirmButtonColor}
+						disabled={isLoading}
 					>
-						{confirmText}
+						{isLoading ? "Deleting..." : confirmText}
 					</Button>
 				</div>
 			</div>
